@@ -8,19 +8,19 @@
 
 package application;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Quiz {
 
-  ArrayList<Question> quizQuestion;
+  List<Question> quizQuestion;
   double score;
 
-  Quiz(ArrayList<Question> questions) {
+  Quiz(List<Question> questions) {
     this.quizQuestion = questions;
     this.score = questions.size();
   }
 
-  public ArrayList<Question> getQuizQuestion() {
+  public List<Question> getQuizQuestion() {
     return quizQuestion;
   }
 

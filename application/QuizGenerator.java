@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -84,18 +85,15 @@ public class QuizGenerator {
 
   // Create a Quiz object with questions with selected topic and given amount
   public void generateQuiz(String topic, int amount) {
-    int count = 0;
     ArrayList<Question> quizQuestions = new ArrayList<>();
     for (Question question : questionBank) {
-      if (question.getTopic().equals(topic) && count < amount) {
+      if (question.getTopic().equals(topic)) {
         quizQuestions.add(question);
-        count++;
-      } else if (count >= amount) {
-        break;
       }
     }
-    // TODO: only randomly select given amount of questions to quiz object
-    quiz = new Quiz(quizQuestions);
+    Collections.shuffle(quizQuestions);
+    
+    quiz = new Quiz(quizQuestions.subList(0, amount-1));
   }
 
   /**
