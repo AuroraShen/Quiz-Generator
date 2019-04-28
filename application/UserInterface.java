@@ -49,6 +49,8 @@ import java.util.*;
 // to give each component different name and corresponding event handler
 
 public class UserInterface extends Application {
+  boolean needQuit = false;
+  Stage stage;
   private HashMap<String, BorderPane> screenMap = new HashMap<>();
   private Scene main; // Scene to display different panes
   BorderPane root; // the main menu
@@ -130,6 +132,9 @@ public class UserInterface extends Application {
         // TODO save info to file
         main.setRoot(root);
         System.out.println("Saved successfully");
+        if(needQuit) {
+          stage.close();
+        }
       }
     });
 
@@ -148,7 +153,7 @@ public class UserInterface extends Application {
    * This method initializes all screens that we need
    */
   public void initializeScreens() {
-    String[] screenNames = {"add", "load1", "load2", "next", "save"};
+    String[] screenNames = {"add", "load1", "load2", "next", "save", "exit"};
     for (String name : screenNames) {
       this.addScreen(name);
     }
@@ -266,6 +271,9 @@ public class UserInterface extends Application {
 
         screenMap.get(name).setCenter(vbox);
         screenMap.get(name).setAlignment(vbox, Pos.CENTER);
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
         break;
       case "load1":
         vbox = new VBox();
@@ -324,7 +332,9 @@ public class UserInterface extends Application {
         buttons.setSpacing(10);
         currScreen.setBottom(buttons);
         currScreen.setAlignment(buttons, Pos.CENTER_RIGHT);
-
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
         break;
       case "load2":
         vbox = new VBox();
@@ -389,6 +399,9 @@ public class UserInterface extends Application {
             activate("next");
           }
         });
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
         break;
       case "next":
         // TODO goes to final result only if run out of questions.
@@ -434,7 +447,9 @@ public class UserInterface extends Application {
         resultChoice.setAlignment(Pos.CENTER_RIGHT);
         screenMap.get(name).setBottom(resultChoice);
         resultChoice.setSpacing(10);
-
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
         break;
       case "save":
         vbox = new VBox();
@@ -446,11 +461,56 @@ public class UserInterface extends Application {
         screenMap.get(name).setTop(text);
         screenMap.get(name).setCenter(vbox);
         screenMap.get(name).setBottom(this.addButtonForSaveScreen());
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
         break;
+      case "exit":
+        vbox = new VBox();
+        hbox = new HBox();
+        text = new Text("Quit");
+        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+        screenMap.get(name).setTop(text);
+        Text exitMessage = new Text("Would you like to save questions?");
+        exitMessage.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+        Button saveQuit = new Button("Save");
+        Button noSaveQuit = new Button("Don't save");
+        Button cancelQuit = new Button("Cancel");
+        hbox.getChildren().addAll(saveQuit, noSaveQuit, cancelQuit);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(10);
+        vbox.getChildren().addAll(exitMessage, hbox);
+        vbox.setSpacing(20);
+        vbox.setAlignment(Pos.CENTER);
+        
+        saveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent me) {
+            setupScreens("save");
+            activate("save");
+            needQuit = true;
+          }
+        });
+        
+        noSaveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent me) {
+            stage.close();
+          }
+        });
+        
+        cancelQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent me) {
+            main.setRoot(root);
+          }
+        });
+        
+        screenMap.get(name).setCenter(vbox);
+        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
+        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
     }
-    screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-    screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-    screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+
   }
 
   public void addScreen(String name) {
@@ -474,6 +534,7 @@ public class UserInterface extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     try {
+      this.stage = primaryStage;
       primaryStage.setTitle("Quiz Generator");
       root = new BorderPane();
       main = new Scene(root, 600, 600);
@@ -487,6 +548,23 @@ public class UserInterface extends Application {
       root.setMargin(root.getTop(), inset);
       root.setAlignment(title, Pos.CENTER);
       root.setCenter(this.addButtonForRootScreen());
+      Button exitButton = new Button("Exit");
+      exitButton.setPrefSize(150, 60);
+      HBox hbox = new HBox();
+      hbox.getChildren().add(exitButton);
+      hbox.setAlignment(Pos.TOP_CENTER);
+      hbox.setPadding(new Insets(30));
+      root.setBottom(hbox);
+      root.setAlignment(exitButton, Pos.CENTER);
+      
+      exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent me) {
+          activate("exit"); // call activate method to set scene
+          setupScreens("exit");
+          System.out.println("Exit warning page");
+        }
+      });
 
       initializeScreens();
 
