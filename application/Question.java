@@ -15,14 +15,6 @@ public class Question {
   public String topic;
   private String correctAnswer;
 
-  // Constructor without image input
-  public Question(String questionText, String[] choiceArray, String topic, String answer) {
-    this.questionText = questionText;
-    this.choiceArray = choiceArray;
-    this.topic = topic;
-    this.correctAnswer = answer;
-  }
-
   // Constructor with image input
   public Question(String questionText, String[] choiceArray, String imagePath, String topic,
       String answer) {
@@ -31,6 +23,11 @@ public class Question {
     this.topic = topic;
     this.imageFile = imagePath;
     this.correctAnswer = answer;
+  }
+
+  // Constructor without image input
+  public Question(String questionText, String[] choiceArray, String topic, String answer) {
+    this(questionText, choiceArray, "none", topic, answer);
   }
 
   public String getQuestion() {

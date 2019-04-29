@@ -30,8 +30,8 @@ import org.json.simple.parser.ParseException;
 
 public class QuizGenerator {
 
-  Quiz quiz;  // current quiz
-  ArrayList<Question> questionBank;  // all the questions that we have
+  private Quiz quiz;  // current quiz
+  private ArrayList<Question> questionBank;  // all the questions that we have
   private Set<String> topicList;  // set of topics in question bank
   
   /**
@@ -39,6 +39,7 @@ public class QuizGenerator {
    */
   QuizGenerator(){
     questionBank = new ArrayList<Question>();
+    topicList = new HashSet<String>();
   }
   
   // Read in all questions
@@ -93,7 +94,7 @@ public class QuizGenerator {
     }
     Collections.shuffle(quizQuestions);
     
-    quiz = new Quiz(quizQuestions.subList(0, amount-1));
+    quiz = new Quiz(quizQuestions.subList(0, amount));
   }
 
   /**
@@ -130,6 +131,7 @@ public class QuizGenerator {
     quiz.put("questionArray", questionArray); // add question array to the quiz object
     FileWriter outFile = new FileWriter(filePath); // open file write according to the parameter
     outFile.write(quiz.toJSONString());
+    outFile.flush();
   }
 
   /**
@@ -175,5 +177,13 @@ public class QuizGenerator {
       }
       return number;
     }
+  }
+  
+  /**
+   * getter for question bank
+   * @return
+   */
+  public List<Question> getQuestionBank() {
+    return questionBank;
   }
 }
