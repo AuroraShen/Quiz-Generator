@@ -42,13 +42,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
+import org.json.simple.parser.ParseException;
 
 // TODO Make each screen to be a single method
 // TODO Remove for loops inside of screen setup function
 // to give each component different name and corresponding event handler
 
 public class UserInterface extends Application {
+  QuizGenerator quizGenerator = new QuizGenerator();
   boolean needQuit = false;
   Stage stage;
   private HashMap<String, BorderPane> screenMap = new HashMap<>();
@@ -137,12 +141,21 @@ public class UserInterface extends Application {
     // TODO read topic and number of questions from load1 screen
   }
 
-  public void generateQuiz() {
+  public void generateQuiz(String filePath, String topic, int amount)
+      throws FileNotFoundException, IOException, ParseException {
     // TODO generate quizs based on user's choice
+    try {
+      quizGenerator.addQuestionFromFile(filePath);
+    } catch (Exception e) {
+      System.out.println("Unexpected exception occured");
+    }
+
+    quizGenerator.generateQuiz(topic, amount);
   }
 
-  public void showResult() {
+  public double getResult() {
     // TODO show score. Will be called once user submits or running out of questions
+    return quizGenerator.getScore();
   }
 
   public void setUpAddScreen(BorderPane pane) {
@@ -428,10 +441,33 @@ public class UserInterface extends Application {
     hbox.setAlignment(Pos.CENTER_RIGHT);
     hbox.setSpacing(10);
 
+    pane.setBottom(hbox);
+
+    VBox vbox = new VBox();
+    TextField fileName = new TextField();
+    fileName.setPromptText("Enter a valid file name");
+    vbox.getChildren().addAll(new Text("Filename:"), fileName);
+    // TODO set action here
+    Text text = new Text("Save");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+    pane.setCenter(vbox);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+    
     save.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         // TODO save info to file
+        try {
+          quizGenerator.save(fileName.getText());
+        } catch(FileNotFoundException e) {
+          System.out.println("File Not Found");
+        } catch(Exception e) {
+          System.out.println("Unexcepted exception occured in save screen");
+        }
+
         main.setRoot(root);
         System.out.println("Saved successfully");
         if (needQuit) {
@@ -447,20 +483,6 @@ public class UserInterface extends Application {
         System.out.println("Go back to root with out any action");
       }
     });
-    pane.setBottom(hbox);
-
-    VBox vbox = new VBox();
-    TextField fileName = new TextField();
-    fileName.setPromptText("Enter a valid file name");
-    vbox.getChildren().addAll(new Text("Filename:"), fileName);
-    // TODO set action here
-    Text text = new Text("Save");
-    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-    pane.setTop(text);
-    pane.setCenter(vbox);
-    pane.setMargin(pane.getTop(), insets);
-    pane.setMargin(pane.getCenter(), insets);
-    pane.setMargin(pane.getBottom(), insets);
   }
 
   public void setUpExitScreen(BorderPane pane) {

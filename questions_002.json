@@ -3,7 +3,7 @@
 	[
 	    {
 	        "meta-data":"unused",
-			"questionText": "If a good hash function is found and a reasonable table size is used for a hash table, then the operations of put, remove, and get should achieve an average time complexity of _____ where $N$ is the number of items and $TS$ is the size of the table.",
+		"questionText": "If a good hash function is found and a reasonable table size is used for a hash table, then the operations of put, remove, and get should achieve an average time complexity of _____ where $N$ is the number of items and $TS$ is the size of the table.",
 	        "topic": "hash table",
 	        "image":"none",
 	        "choiceArray": 
@@ -17,7 +17,7 @@
 	    },
 	    {
 	        "meta-data":"unused",
-			"questionText": "Which command will change the current working directory to a sub-directory named $p3$?",
+		"questionText": "Which command will change the current working directory to a sub-directory named $p3$?",
 	        "topic": "linux",
 	        "image":"none",
 	        "choiceArray": 
@@ -31,7 +31,7 @@
 	    },
 	    {
 	        "meta-data":"unused",
-			"questionText": "Which of the following tree sets are all height-balanced trees? Choose most complete list.",
+		"questionText": "Which of the following tree sets are all height-balanced trees? Choose most complete list.",
 	        "topic": "tree",
 	        "image":"none",
 	        "choiceArray": 
