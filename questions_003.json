@@ -3,7 +3,7 @@
 	[
 	    {
 	        "meta-data":"unused",
-			"questionText": "Which statement is TRUE regarding sets A and B.",
+		"questionText": "Which statement is TRUE regarding sets A and B.",
 	        "topic": "set",
 	        "image":"set_subset_superset.png",
 	        "choiceArray": 
@@ -17,7 +17,7 @@
 	    },
 	    {
 	        "meta-data":"unused",
-			"questionText": "When two algorithms have different big-O time complexity, the constants and low-order terms only matter ________. ",
+		"questionText": "When two algorithms have different big-O time complexity, the constants and low-order terms only matter ________. ",
 	        "topic": "performance",
 	        "image":"none",
 	        "choiceArray": 
@@ -28,7 +28,7 @@
 	    },
 	    {
 	        "meta-data":"unused",
-			"questionText": "Which insert order produces this 2-3 Tree? ",
+		"questionText": "Which insert order produces this 2-3 Tree? ",
 	        "topic": "tree",
 	        "image":"btree.png",
 	        "choiceArray": 
