@@ -49,6 +49,7 @@ import java.util.*;
 // to give each component different name and corresponding event handler
 
 public class UserInterface extends Application {
+  QuizGenerator quizGenerator = new QuizGenerator();
   boolean needQuit = false;
   Stage stage;
   private HashMap<String, BorderPane> screenMap = new HashMap<>();
