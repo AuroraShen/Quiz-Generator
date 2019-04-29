@@ -83,7 +83,11 @@ public class QuizGenerator {
     }
   }
 
-  // Create a Quiz object with questions with selected topic and given amount
+  /**
+   * Create a Quiz object with questions with selected topic and given amount
+   * @param topic the topic of the quiz to generate
+   * @param amount is number of questions to put into the quiz
+   */
   public void generateQuiz(String topic, int amount) {
     ArrayList<Question> quizQuestions = new ArrayList<>();
     for (Question question : questionBank) {
