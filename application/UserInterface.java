@@ -44,8 +44,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import java.util.*;
 
-//TODO Make each screen to be a single method
-//TODO Remove for loops inside of screen setup function 
+// TODO Make each screen to be a single method
+// TODO Remove for loops inside of screen setup function
 // to give each component different name and corresponding event handler
 
 public class UserInterface extends Application {
@@ -114,7 +114,7 @@ public class UserInterface extends Application {
 
     return hbox;
   }
-  
+
   /**
    * This method initializes all screens that we need
    */
@@ -156,23 +156,23 @@ public class UserInterface extends Application {
     // initialize a HBox for text of the question
     // and add to the vbox
     HBox hbox = new HBox();
-    textField = new TextField();
-    textField.setPromptText("Type in question");
-    hbox.getChildren().addAll(new Text("Text: "), textField);
+    TextField question = new TextField();
+    question.setPromptText("Type in question");
+    hbox.getChildren().addAll(new Text("Text: "), question);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER); // align to the center
     // initialize a new HBox for topic of the question
     hbox = new HBox();
-    textField = new TextField();
-    textField.setPromptText("Type in topic");
-    hbox.getChildren().addAll(new Text("Topic: "), textField);
+    TextField topic = new TextField();
+    topic.setPromptText("Type in topic");
+    hbox.getChildren().addAll(new Text("Topic: "), topic);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
     // initialize a new HBox for Image file name of the question
     hbox = new HBox();
-    textField = new TextField();
-    textField.setPromptText("Type in image name");
-    hbox.getChildren().addAll(new Text("Image: "), textField);
+    TextField image = new TextField();
+    image.setPromptText("Type in image name");
+    hbox.getChildren().addAll(new Text("Image: "), image);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
     // initialize a new HBox for texts
@@ -187,18 +187,19 @@ public class UserInterface extends Application {
     button.setToggleGroup(group);
     button.setSelected(true);
     hbox = new HBox();
-    textField = new TextField();
-    textField.setPromptText("Choice 1");
-    hbox.getChildren().addAll(button, textField);
+    TextField choice = new TextField();
+    choice.setPromptText("Choice 1");
+    hbox.getChildren().addAll(button, choice);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
     for (int i = 1; i < 5; i++) {
       hbox = new HBox();
       button = new RadioButton();
       button.setToggleGroup(group);
-      textField = new TextField();
-      textField.setPromptText("Choice " + (i + 1));
-      hbox.getChildren().addAll(button, textField);
+      choice = new TextField();
+      choice.setPromptText("Choice " + (i + 1));
+      // TODO set action here
+      hbox.getChildren().addAll(button, choice);
       vbox.getChildren().add(hbox);
       hbox.setAlignment(Pos.CENTER);
     }
@@ -235,7 +236,7 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
   }
-  
+
   public void setUpLoad1Screen(BorderPane pane) {
     VBox vbox = new VBox();
     BorderPane currScreen = pane;
@@ -250,7 +251,9 @@ public class UserInterface extends Application {
     HBox hbox = new HBox(); // hbox for topic prompt
     hbox.getChildren().addAll(new Text("Topic: "), topicComboBox);
     HBox numberQuestionHBox = new HBox(); // hbox for number of question prompt
-    numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), new TextField());
+    TextField questionNum = new TextField();
+    numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), questionNum);
+    // TODO set action here
     hbox.setAlignment(Pos.CENTER);
     numberQuestionHBox.setAlignment(Pos.CENTER);
 
@@ -261,6 +264,7 @@ public class UserInterface extends Application {
     TextField fileName = new TextField();
     fileName.setPromptText("Enter the file name");
     hbox.getChildren().addAll(new Text("Question file: "), fileName);
+    // TODO set action here
     hbox.setAlignment(Pos.CENTER);
     vbox.getChildren().add(hbox);
 
@@ -297,7 +301,7 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
   }
-  
+
   public void setUpLoad2Screen(BorderPane pane) {
     VBox vbox = new VBox();
     BorderPane currentScreen = pane;
@@ -329,7 +333,8 @@ public class UserInterface extends Application {
       hbox = new HBox();
       RadioButton button = new RadioButton();
       button.setToggleGroup(answergroup);
-      hbox.getChildren().addAll(button, new Text("Choice " + (i+2)));
+      //TODO replace next with certain content
+      hbox.getChildren().addAll(button, new Text("Choice " + (i + 2)));
       vbox.getChildren().add(hbox);
       hbox.setAlignment(Pos.CENTER);
     }
@@ -365,9 +370,9 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
   }
-  
+
   public void setUpNextScreen(BorderPane pane) {
- // TODO goes to final result only if run out of questions.
+    // TODO goes to final result only if run out of questions.
     Text text = new Text("Result");
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
     pane.setTop(text);
@@ -414,7 +419,7 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
   }
-  
+
   public void setUpSaveScreen(BorderPane pane) {
     HBox hbox = new HBox();
     Button save = new Button("Save");
@@ -429,7 +434,7 @@ public class UserInterface extends Application {
         // TODO save info to file
         main.setRoot(root);
         System.out.println("Saved successfully");
-        if(needQuit) {
+        if (needQuit) {
           stage.close();
         }
       }
@@ -443,11 +448,12 @@ public class UserInterface extends Application {
       }
     });
     pane.setBottom(hbox);
-    
+
     VBox vbox = new VBox();
     TextField fileName = new TextField();
     fileName.setPromptText("Enter a valid file name");
     vbox.getChildren().addAll(new Text("Filename:"), fileName);
+    // TODO set action here
     Text text = new Text("Save");
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
     pane.setTop(text);
@@ -474,7 +480,7 @@ public class UserInterface extends Application {
     vbox.getChildren().addAll(exitMessage, hbox);
     vbox.setSpacing(20);
     vbox.setAlignment(Pos.CENTER);
-    
+
     saveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -483,25 +489,25 @@ public class UserInterface extends Application {
         needQuit = true;
       }
     });
-    
+
     noSaveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         stage.close();
       }
     });
-    
+
     cancelQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         main.setRoot(root);
       }
-    });    
+    });
     pane.setCenter(vbox);
     pane.setMargin(pane.getTop(), insets);
     pane.setMargin(pane.getCenter(), insets);
   }
-  
+
   public void setupScreens(String name) {
     VBox vbox;
     HBox hbox;
@@ -574,7 +580,7 @@ public class UserInterface extends Application {
       hbox.setPadding(new Insets(30));
       root.setBottom(hbox);
       root.setAlignment(exitButton, Pos.CENTER);
-      
+
       exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent me) {
