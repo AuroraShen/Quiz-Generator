@@ -49,9 +49,9 @@ public class QuizGenerator {
     Object input = new JSONParser().parse(new FileReader(filePath));
     JSONObject jo = (JSONObject) input; // Typecast
     // Get question array
-    JSONArray ja = (JSONArray) jo.get("questionArray");
+    JSONArray questionArray = (JSONArray) jo.get("questionArray");  // JSONArray for questionArray
     // Iterate JSONArray
-    Iterator itr = ja.iterator();
+    Iterator itr = questionArray.iterator();  // iterator for questionArray
     Question q;
 
     while (itr.hasNext()) {
@@ -61,7 +61,6 @@ public class QuizGenerator {
       String imagePath = (String) obj.get("image");
       // Read through choices
       JSONArray choiceArray = (JSONArray) obj.get("choiceArray");
-      Iterator itr2 = choiceArray.iterator();
       String[] choices = new String[5];
       String correctAnswer = "";  // correct answer is set to empty initially
       int index = 0;
@@ -92,15 +91,16 @@ public class QuizGenerator {
         quizQuestions.add(question);
       }
     }
-    Collections.shuffle(quizQuestions);
+    Collections.shuffle(quizQuestions);  // shuffle topic array to get random result
     
+    // put desired amount of questions into quiz
     quiz = new Quiz(quizQuestions.subList(0, amount));
   }
 
   /**
    * convert current quiz bank to a json file and save it to a specific filePath
    * 
-   * @param filePath
+   * @param filePath the filePath we want to save to
    */
   public void save(String filePath) throws IOException {
     JSONObject quiz = new JSONObject(); // the entire quiz JSONObject
@@ -144,7 +144,7 @@ public class QuizGenerator {
 
   /**
    * getter for quiz
-   * @return
+   * @return current quiz
    */
   public Quiz getQuiz() {
     return quiz;
@@ -152,7 +152,7 @@ public class QuizGenerator {
   
   /**
    * getter for topic list
-   * @return
+   * @return current topic list
    */
   public Set<String> getTopicList() {
     return topicList;
@@ -181,7 +181,7 @@ public class QuizGenerator {
   
   /**
    * getter for question bank
-   * @return
+   * @return current question bank
    */
   public List<Question> getQuestionBank() {
     return questionBank;
