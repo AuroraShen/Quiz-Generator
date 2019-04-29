@@ -54,6 +54,7 @@ public class UserInterface extends Application {
   private HashMap<String, BorderPane> screenMap = new HashMap<>();
   private Scene main; // Scene to display different panes
   BorderPane root; // the main menu
+  Insets insets = new Insets(10);
   private int loadNum = 0; //
 
   /**
@@ -69,7 +70,7 @@ public class UserInterface extends Application {
    * 
    * @return
    */
-  public HBox addButtonForRootScreen() {
+  public HBox setUpRootScreen() {
     HBox hbox = new HBox();
     Button addButton = new Button("Add Question"); // add button for "add question" screen
     Button loadButton = new Button("Load Question"); // button for "load question" screen
@@ -113,42 +114,7 @@ public class UserInterface extends Application {
 
     return hbox;
   }
-
-  /**
-   * 
-   * @return
-   */
-  public HBox addButtonForSaveScreen() {
-    HBox hbox = new HBox();
-    Button save = new Button("Save");
-    Button cancel = new Button("Cancel");
-    hbox.getChildren().addAll(save, cancel);
-    hbox.setAlignment(Pos.CENTER_RIGHT);
-    hbox.setSpacing(10);
-
-    save.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent me) {
-        // TODO save info to file
-        main.setRoot(root);
-        System.out.println("Saved successfully");
-        if(needQuit) {
-          stage.close();
-        }
-      }
-    });
-
-    cancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent me) {
-        main.setRoot(root);
-        System.out.println("Go back to root with out any action");
-      }
-    });
-
-    return hbox;
-  }
-
+  
   /**
    * This method initializes all screens that we need
    */
@@ -179,6 +145,363 @@ public class UserInterface extends Application {
     // TODO show score. Will be called once user submits or running out of questions
   }
 
+  public void setUpAddScreen(BorderPane pane) {
+    VBox vbox = new VBox();
+    TextField textField;
+    // Set the text at the top
+    Text text = new Text("Add new question");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+
+    // initialize a HBox for text of the question
+    // and add to the vbox
+    HBox hbox = new HBox();
+    textField = new TextField();
+    textField.setPromptText("Type in question");
+    hbox.getChildren().addAll(new Text("Text: "), textField);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER); // align to the center
+    // initialize a new HBox for topic of the question
+    hbox = new HBox();
+    textField = new TextField();
+    textField.setPromptText("Type in topic");
+    hbox.getChildren().addAll(new Text("Topic: "), textField);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    // initialize a new HBox for Image file name of the question
+    hbox = new HBox();
+    textField = new TextField();
+    textField.setPromptText("Type in image name");
+    hbox.getChildren().addAll(new Text("Image: "), textField);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    // initialize a new HBox for texts
+    hbox = new HBox();
+    hbox.getChildren().add(new Text("Choices: "));
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+
+    // toggle group of radio buttons so that only one selection can be chosen
+    ToggleGroup group = new ToggleGroup();
+    RadioButton button = new RadioButton();
+    button.setToggleGroup(group);
+    button.setSelected(true);
+    hbox = new HBox();
+    textField = new TextField();
+    textField.setPromptText("Choice 1");
+    hbox.getChildren().addAll(button, textField);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    for (int i = 1; i < 5; i++) {
+      hbox = new HBox();
+      button = new RadioButton();
+      button.setToggleGroup(group);
+      textField = new TextField();
+      textField.setPromptText("Choice " + (i + 1));
+      hbox.getChildren().addAll(button, textField);
+      vbox.getChildren().add(hbox);
+      hbox.setAlignment(Pos.CENTER);
+    }
+    vbox.setSpacing(10);
+
+    Button saveButton = new Button("Add");
+    Button cancelButton = new Button("Cancel");
+    hbox = new HBox();
+    hbox.getChildren().addAll(saveButton, cancelButton);
+    hbox.setSpacing(10);
+    hbox.setAlignment(Pos.CENTER_RIGHT);
+
+    saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+        // TODO add new question
+        System.out.println("Go back to root");
+      }
+    });
+    cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+        System.out.println("Go back to root");
+      }
+    });
+
+    pane.setBottom(hbox);
+    pane.setAlignment(saveButton, Pos.CENTER_RIGHT);
+    pane.setCenter(vbox);
+    pane.setAlignment(vbox, Pos.CENTER);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+  
+  public void setUpLoad1Screen(BorderPane pane) {
+    VBox vbox = new VBox();
+    BorderPane currScreen = pane;
+    Text text = new Text("Load question");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    currScreen.setTop(text);
+
+    ObservableList<String> topics =
+        FXCollections.observableArrayList("Topic 1", "Topic 2", "Topic 3");
+    final ComboBox topicComboBox = new ComboBox(topics);
+    topicComboBox.getSelectionModel().selectFirst();
+    HBox hbox = new HBox(); // hbox for topic prompt
+    hbox.getChildren().addAll(new Text("Topic: "), topicComboBox);
+    HBox numberQuestionHBox = new HBox(); // hbox for number of question prompt
+    numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), new TextField());
+    hbox.setAlignment(Pos.CENTER);
+    numberQuestionHBox.setAlignment(Pos.CENTER);
+
+
+    vbox.getChildren().add(hbox);
+    vbox.getChildren().add(numberQuestionHBox);
+    hbox = new HBox();
+    TextField fileName = new TextField();
+    fileName.setPromptText("Enter the file name");
+    hbox.getChildren().addAll(new Text("Question file: "), fileName);
+    hbox.setAlignment(Pos.CENTER);
+    vbox.getChildren().add(hbox);
+
+    vbox.setSpacing(10);
+    vbox.setAlignment(Pos.CENTER);
+    currScreen.setCenter(vbox);
+
+    HBox buttons = new HBox();
+
+    Button backButton = new Button("Cancel");
+    backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+      }
+    });
+
+    Button loadButton = new Button("Start");
+    loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("load2");
+        activate("load2");
+        System.out.println("Test");
+      }
+    });
+
+    buttons.getChildren().addAll(backButton, loadButton);
+    buttons.setAlignment(Pos.CENTER_RIGHT);
+    buttons.setSpacing(10);
+    currScreen.setBottom(buttons);
+    currScreen.setAlignment(buttons, Pos.CENTER_RIGHT);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+  
+  public void setUpLoad2Screen(BorderPane pane) {
+    VBox vbox = new VBox();
+    BorderPane currentScreen = pane;
+    Text text = new Text("Quiz");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    currentScreen.setTop(text);
+    HBox hbox = new HBox();
+    vbox.getChildren().add(new Text(
+        "Question: (We will show question here. \nThe space below is for image. It will show image if there is.)"));
+    // hbox.getChildren().addAll(new Text("Question Text: "), questionLabel);
+    // currentScreen.setCenter(questionLabel);
+    // the question image display
+    // Image questionImage = new Image("question.jpg");
+    ImageView myimage = new ImageView();
+    myimage.setFitHeight(200);
+    myimage.setFitWidth(400);
+    vbox.getChildren().add(myimage);
+    // currentScreen.setCenter(myimage);
+    // the choice display
+    ToggleGroup answergroup = new ToggleGroup();
+    RadioButton answerbutton = new RadioButton();
+    answerbutton.setToggleGroup(answergroup);
+    answerbutton.setSelected(true);
+    hbox = new HBox();
+    hbox.getChildren().addAll(answerbutton, new Text("Choice 1"));
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    for (int i = 0; i < 4; i++) {
+      hbox = new HBox();
+      RadioButton button = new RadioButton();
+      button.setToggleGroup(answergroup);
+      hbox.getChildren().addAll(button, new Text("Choice " + (i+2)));
+      vbox.getChildren().add(hbox);
+      hbox.setAlignment(Pos.CENTER);
+    }
+    vbox.setSpacing(10);
+
+    currentScreen.setCenter(vbox);
+
+    hbox = new HBox();
+    // the submit button
+    Button submit = new Button("Submit");
+    Button next = new Button("Next");
+    hbox.getChildren().addAll(submit, next);
+    hbox.setAlignment(Pos.CENTER_RIGHT);
+    currentScreen.setBottom(hbox);
+    hbox.setSpacing(10);
+
+    submit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("next");
+        activate("next");
+      }
+    });
+
+    next.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("next");
+        activate("next");
+      }
+    });
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+  
+  public void setUpNextScreen(BorderPane pane) {
+ // TODO goes to final result only if run out of questions.
+    Text text = new Text("Result");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+    HBox hbox = new HBox();
+    hbox.getChildren().addAll(new Text("Score:  "), new Text(
+        "Will display score. According to our design, this screen will be activated \nif running out of questions or clicking on submit. \nFor now, we haven't set it up yet"));
+    pane.setCenter(hbox);
+    pane.setAlignment(hbox, Pos.CENTER);
+    pane.setMargin(hbox, insets);
+
+    HBox resultChoice = new HBox();
+    Button changeSetting = new Button("Change setting");
+    Button tryAgain = new Button("Try Again");
+    Button quit = new Button("Quit");
+    resultChoice.getChildren().addAll(changeSetting, tryAgain, quit);
+
+    changeSetting.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("load1");
+        activate("load1");
+      }
+    });
+
+    tryAgain.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("load2");
+        activate("load2");
+      }
+    });
+
+    quit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+      }
+    });
+
+    resultChoice.setAlignment(Pos.CENTER_RIGHT);
+    pane.setBottom(resultChoice);
+    resultChoice.setSpacing(10);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+  
+  public void setUpSaveScreen(BorderPane pane) {
+    HBox hbox = new HBox();
+    Button save = new Button("Save");
+    Button cancel = new Button("Cancel");
+    hbox.getChildren().addAll(save, cancel);
+    hbox.setAlignment(Pos.CENTER_RIGHT);
+    hbox.setSpacing(10);
+
+    save.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        // TODO save info to file
+        main.setRoot(root);
+        System.out.println("Saved successfully");
+        if(needQuit) {
+          stage.close();
+        }
+      }
+    });
+
+    cancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+        System.out.println("Go back to root with out any action");
+      }
+    });
+    pane.setBottom(hbox);
+    
+    VBox vbox = new VBox();
+    TextField fileName = new TextField();
+    fileName.setPromptText("Enter a valid file name");
+    vbox.getChildren().addAll(new Text("Filename:"), fileName);
+    Text text = new Text("Save");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+    pane.setCenter(vbox);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+
+  public void setUpExitScreen(BorderPane pane) {
+    VBox vbox = new VBox();
+    HBox hbox = new HBox();
+    Text text = new Text("Quit");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+    Text exitMessage = new Text("Would you like to save questions?");
+    exitMessage.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    Button saveQuit = new Button("Save");
+    Button noSaveQuit = new Button("Don't save");
+    Button cancelQuit = new Button("Cancel");
+    hbox.getChildren().addAll(saveQuit, noSaveQuit, cancelQuit);
+    hbox.setAlignment(Pos.CENTER);
+    hbox.setSpacing(10);
+    vbox.getChildren().addAll(exitMessage, hbox);
+    vbox.setSpacing(20);
+    vbox.setAlignment(Pos.CENTER);
+    
+    saveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        setupScreens("save");
+        activate("save");
+        needQuit = true;
+      }
+    });
+    
+    noSaveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        stage.close();
+      }
+    });
+    
+    cancelQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        main.setRoot(root);
+      }
+    });    
+    pane.setCenter(vbox);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+  }
+  
   public void setupScreens(String name) {
     VBox vbox;
     HBox hbox;
@@ -187,328 +510,23 @@ public class UserInterface extends Application {
     TextField fileName;
     switch (name) {
       case "add":
-        vbox = new VBox();
-        TextField textField;
-        // Set the text at the top
-        text = new Text("Add new question");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        screenMap.get(name).setTop(text);
-
-        // initialize a HBox for text of the question
-        // and add to the vbox
-        hbox = new HBox();
-        textField = new TextField();
-        textField.setPromptText("Type in question");
-        hbox.getChildren().addAll(new Text("Text: "), textField);
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER); // align to the center
-        // initialize a new HBox for topic of the question
-        hbox = new HBox();
-        textField = new TextField();
-        textField.setPromptText("Type in topic");
-        hbox.getChildren().addAll(new Text("Topic: "), textField);
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER);
-        // initialize a new HBox for Image file name of the question
-        hbox = new HBox();
-        textField = new TextField();
-        textField.setPromptText("Type in image name");
-        hbox.getChildren().addAll(new Text("Image: "), textField);
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER);
-        // initialize a new HBox for texts
-        hbox = new HBox();
-        hbox.getChildren().add(new Text("Choices: "));
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER);
-
-        // toggle group of radio buttons so that only one selection can be chosen
-        ToggleGroup group = new ToggleGroup();
-        RadioButton button = new RadioButton();
-        button.setToggleGroup(group);
-        button.setSelected(true);
-        hbox = new HBox();
-        textField = new TextField();
-        textField.setPromptText("Choice 1");
-        hbox.getChildren().addAll(button, textField);
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER);
-        for (int i = 1; i < 5; i++) {
-          hbox = new HBox();
-          button = new RadioButton();
-          button.setToggleGroup(group);
-          textField = new TextField();
-          textField.setPromptText("Choice " + (i + 1));
-          hbox.getChildren().addAll(button, textField);
-          vbox.getChildren().add(hbox);
-          hbox.setAlignment(Pos.CENTER);
-        }
-        vbox.setSpacing(10);
-
-        Button saveButton = new Button("Add");
-        Button cancelButton = new Button("Cancel");
-        hbox = new HBox();
-        hbox.getChildren().addAll(saveButton, cancelButton);
-        hbox.setSpacing(10);
-        hbox.setAlignment(Pos.CENTER_RIGHT);
-        screenMap.get(name).setBottom(hbox);
-        screenMap.get(name).setAlignment(saveButton, Pos.CENTER_RIGHT);
-        saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            main.setRoot(root);
-            // TODO add new question
-            System.out.println("Go back to root");
-          }
-        });
-        cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            main.setRoot(root);
-            System.out.println("Go back to root");
-          }
-        });
-
-        screenMap.get(name).setCenter(vbox);
-        screenMap.get(name).setAlignment(vbox, Pos.CENTER);
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+        this.setUpAddScreen(screenMap.get(name));
         break;
       case "load1":
-        vbox = new VBox();
-        BorderPane currScreen = screenMap.get(name);
-        text = new Text("Load question");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        currScreen.setTop(text);
-
-        ObservableList<String> topics =
-            FXCollections.observableArrayList("Topic 1", "Topic 2", "Topic 3");
-        final ComboBox topicComboBox = new ComboBox(topics);
-        topicComboBox.getSelectionModel().selectFirst();
-        hbox = new HBox(); // hbox for topic prompt
-        hbox.getChildren().addAll(new Text("Topic: "), topicComboBox);
-        HBox numberQuestionHBox = new HBox(); // hbox for number of question prompt
-        numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), new TextField());
-        hbox.setAlignment(Pos.CENTER);
-        numberQuestionHBox.setAlignment(Pos.CENTER);
-
-
-        vbox.getChildren().add(hbox);
-        vbox.getChildren().add(numberQuestionHBox);
-        hbox = new HBox();
-        fileName = new TextField();
-        fileName.setPromptText("Enter the file name");
-        hbox.getChildren().addAll(new Text("Question file: "), fileName);
-        hbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().add(hbox);
-
-        vbox.setSpacing(10);
-        vbox.setAlignment(Pos.CENTER);
-        currScreen.setCenter(vbox);
-
-        HBox buttons = new HBox();
-
-        Button backButton = new Button("Cancel");
-        backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            main.setRoot(root);
-          }
-        });
-
-        Button loadButton = new Button("Start");
-        loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("load2");
-            activate("load2");
-            System.out.println("Test");
-          }
-        });
-
-        buttons.getChildren().addAll(backButton, loadButton);
-        buttons.setAlignment(Pos.CENTER_RIGHT);
-        buttons.setSpacing(10);
-        currScreen.setBottom(buttons);
-        currScreen.setAlignment(buttons, Pos.CENTER_RIGHT);
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+        this.setUpLoad1Screen(screenMap.get(name));
         break;
       case "load2":
-        vbox = new VBox();
-        BorderPane currentScreen = screenMap.get(name);
-        text = new Text("Quiz");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        currentScreen.setTop(text);
-        hbox = new HBox();
-        vbox.getChildren().add(new Text(
-            "Question: (We will show question here. \nThe space below is for image. It will show image if there is.)"));
-        // hbox.getChildren().addAll(new Text("Question Text: "), questionLabel);
-        // currentScreen.setCenter(questionLabel);
-        // the question image display
-        // Image questionImage = new Image("question.jpg");
-        ImageView myimage = new ImageView();
-        myimage.setFitHeight(200);
-        myimage.setFitWidth(400);
-        vbox.getChildren().add(myimage);
-        // currentScreen.setCenter(myimage);
-        // the choice display
-        ToggleGroup answergroup = new ToggleGroup();
-        RadioButton answerbutton = new RadioButton();
-        answerbutton.setToggleGroup(answergroup);
-        answerbutton.setSelected(true);
-        hbox = new HBox();
-        hbox.getChildren().addAll(answerbutton, new Text("Choice 1"));
-        vbox.getChildren().add(hbox);
-        hbox.setAlignment(Pos.CENTER);
-        for (int i = 0; i < 4; i++) {
-          hbox = new HBox();
-          button = new RadioButton();
-          button.setToggleGroup(answergroup);
-          hbox.getChildren().addAll(button, new Text("Choice " + (i+2)));
-          vbox.getChildren().add(hbox);
-          hbox.setAlignment(Pos.CENTER);
-        }
-        vbox.setSpacing(10);
-
-        currentScreen.setCenter(vbox);
-
-        hbox = new HBox();
-        // the submit button
-        Button submit = new Button("Submit");
-        Button next = new Button("Next");
-        hbox.getChildren().addAll(submit, next);
-        hbox.setAlignment(Pos.CENTER_RIGHT);
-        currentScreen.setBottom(hbox);
-        hbox.setSpacing(10);
-
-        submit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("next");
-            activate("next");
-          }
-        });
-
-        next.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("next");
-            activate("next");
-          }
-        });
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+        this.setUpLoad2Screen(screenMap.get(name));
         break;
       case "next":
-        // TODO goes to final result only if run out of questions.
-        text = new Text("Result");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        screenMap.get(name).setTop(text);
-        hbox = new HBox();
-        hbox.getChildren().addAll(new Text("Score:  "), new Text(
-            "Will display score. According to our design, this screen will be activated \nif running out of questions or clicking on submit. \nFor now, we haven't set it up yet"));
-        screenMap.get(name).setCenter(hbox);
-        screenMap.get(name).setAlignment(hbox, Pos.CENTER);
-        screenMap.get(name).setMargin(hbox, insets);
-
-        HBox resultChoice = new HBox();
-        Button changeSetting = new Button("Change setting");
-        Button tryAgain = new Button("Try Again");
-        Button quit = new Button("Quit");
-        resultChoice.getChildren().addAll(changeSetting, tryAgain, quit);
-
-        changeSetting.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("load1");
-            activate("load1");
-          }
-        });
-
-        tryAgain.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("load2");
-            activate("load2");
-          }
-        });
-
-        quit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            main.setRoot(root);
-          }
-        });
-
-        resultChoice.setAlignment(Pos.CENTER_RIGHT);
-        screenMap.get(name).setBottom(resultChoice);
-        resultChoice.setSpacing(10);
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+        this.setUpNextScreen(screenMap.get(name));
         break;
       case "save":
-        vbox = new VBox();
-        fileName = new TextField();
-        fileName.setPromptText("Enter a valid file name");
-        vbox.getChildren().addAll(new Text("Filename:"), fileName);
-        text = new Text("Save");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        screenMap.get(name).setTop(text);
-        screenMap.get(name).setCenter(vbox);
-        screenMap.get(name).setBottom(this.addButtonForSaveScreen());
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getBottom(), insets);
+        this.setUpSaveScreen(screenMap.get(name));
         break;
       case "exit":
-        vbox = new VBox();
-        hbox = new HBox();
-        text = new Text("Quit");
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        screenMap.get(name).setTop(text);
-        Text exitMessage = new Text("Would you like to save questions?");
-        exitMessage.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-        Button saveQuit = new Button("Save");
-        Button noSaveQuit = new Button("Don't save");
-        Button cancelQuit = new Button("Cancel");
-        hbox.getChildren().addAll(saveQuit, noSaveQuit, cancelQuit);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setSpacing(10);
-        vbox.getChildren().addAll(exitMessage, hbox);
-        vbox.setSpacing(20);
-        vbox.setAlignment(Pos.CENTER);
-        
-        saveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            setupScreens("save");
-            activate("save");
-            needQuit = true;
-          }
-        });
-        
-        noSaveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            stage.close();
-          }
-        });
-        
-        cancelQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent me) {
-            main.setRoot(root);
-          }
-        });
-        
-        screenMap.get(name).setCenter(vbox);
-        screenMap.get(name).setMargin(screenMap.get(name).getTop(), insets);
-        screenMap.get(name).setMargin(screenMap.get(name).getCenter(), insets);
+        this.setUpExitScreen(screenMap.get(name));
+        break;
     }
 
   }
@@ -547,7 +565,7 @@ public class UserInterface extends Application {
       Insets inset = new Insets(30);
       root.setMargin(root.getTop(), inset);
       root.setAlignment(title, Pos.CENTER);
-      root.setCenter(this.addButtonForRootScreen());
+      root.setCenter(this.setUpRootScreen());
       Button exitButton = new Button("Exit");
       exitButton.setPrefSize(150, 60);
       HBox hbox = new HBox();
