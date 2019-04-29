@@ -441,10 +441,33 @@ public class UserInterface extends Application {
     hbox.setAlignment(Pos.CENTER_RIGHT);
     hbox.setSpacing(10);
 
+    pane.setBottom(hbox);
+
+    VBox vbox = new VBox();
+    TextField fileName = new TextField();
+    fileName.setPromptText("Enter a valid file name");
+    vbox.getChildren().addAll(new Text("Filename:"), fileName);
+    // TODO set action here
+    Text text = new Text("Save");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    pane.setTop(text);
+    pane.setCenter(vbox);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+    
     save.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         // TODO save info to file
+        try {
+          quizGenerator.save(fileName.getText());
+        } catch(FileNotFoundException e) {
+          System.out.println("File Not Found");
+        } catch(Exception e) {
+          System.out.println("Unexcepted exception occured in save screen");
+        }
+
         main.setRoot(root);
         System.out.println("Saved successfully");
         if (needQuit) {
@@ -460,20 +483,6 @@ public class UserInterface extends Application {
         System.out.println("Go back to root with out any action");
       }
     });
-    pane.setBottom(hbox);
-
-    VBox vbox = new VBox();
-    TextField fileName = new TextField();
-    fileName.setPromptText("Enter a valid file name");
-    vbox.getChildren().addAll(new Text("Filename:"), fileName);
-    // TODO set action here
-    Text text = new Text("Save");
-    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-    pane.setTop(text);
-    pane.setCenter(vbox);
-    pane.setMargin(pane.getTop(), insets);
-    pane.setMargin(pane.getCenter(), insets);
-    pane.setMargin(pane.getBottom(), insets);
   }
 
   public void setUpExitScreen(BorderPane pane) {
