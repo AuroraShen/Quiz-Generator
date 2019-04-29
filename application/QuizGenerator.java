@@ -186,4 +186,8 @@ public class QuizGenerator {
   public List<Question> getQuestionBank() {
     return questionBank;
   }
+  
+  public double getScore() {
+    return quiz.getScore();
+  }
 }

@@ -42,7 +42,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
+import org.json.simple.parser.ParseException;
 
 // TODO Make each screen to be a single method
 // TODO Remove for loops inside of screen setup function
@@ -138,12 +141,21 @@ public class UserInterface extends Application {
     // TODO read topic and number of questions from load1 screen
   }
 
-  public void generateQuiz() {
+  public void generateQuiz(String filePath, String topic, int amount)
+      throws FileNotFoundException, IOException, ParseException {
     // TODO generate quizs based on user's choice
+    try {
+      quizGenerator.addQuestionFromFile(filePath);
+    } catch (Exception e) {
+      System.out.println("Unexpected exception occured");
+    }
+
+    quizGenerator.generateQuiz(topic, amount);
   }
 
-  public void showResult() {
+  public double getResult() {
     // TODO show score. Will be called once user submits or running out of questions
+    return quizGenerator.getScore();
   }
 
   public void setUpAddScreen(BorderPane pane) {
