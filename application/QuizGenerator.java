@@ -30,8 +30,8 @@ import org.json.simple.parser.ParseException;
 
 public class QuizGenerator {
 
-  private Quiz quiz;  // current quiz
-  private ArrayList<Question> questionBank;  // all the questions that we have
+  Quiz quiz;  // current quiz
+  ArrayList<Question> questionBank;  // all the questions that we have
   private Set<String> topicList;  // set of topics in question bank
   
   /**
