@@ -56,7 +56,7 @@ public class QuizGenerator {
 
     while (itr.hasNext()) {
       JSONObject obj = (JSONObject) itr.next();
-      String questionText = (String) obj.get("name");
+      String questionText = (String) obj.get("questionText");
       String topic = (String) obj.get("topic");
       String imagePath = (String) obj.get("image");
       // Read through choices
@@ -68,7 +68,7 @@ public class QuizGenerator {
         JSONObject currChoice = (JSONObject) choiceArray.get(i);
         choices[i] = (String) currChoice.get("choice");
         if (((String) currChoice.get("isCorrect")).equals("T")) {
-          correctAnswer = choices[index];
+          correctAnswer = choices[i];
         }
       }
       if (imagePath.equals("none")) {
