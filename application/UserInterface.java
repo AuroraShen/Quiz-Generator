@@ -39,6 +39,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -260,6 +262,38 @@ public class UserInterface extends Application {
         choiceArray[2] = choice3.getText();
         choiceArray[3] = choice4.getText();
         choiceArray[4] = choice5.getText();
+        
+        for (String txt: choiceArray) {
+          System.out.println(txt);
+          if (txt.isEmpty()) {
+            System.out.println("a");
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Alert");
+            alert.setHeaderText("Empty Text Field!");
+            alert.setContentText("choices can not be empty");
+            activate("add");
+            setupScreens("add");
+            alert.showAndWait();
+            return;
+          }
+        }
+        
+        if (question.getText().isEmpty() ||
+            topic.getText().isEmpty()) {
+          System.out.println("a");
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("Empty Text Field!");
+          alert.setContentText("choices can not be empty");
+          activate("add");
+          setupScreens("add");
+          alert.showAndWait();
+          return;
+        }
+        
+        if (image.getText().isEmpty()) {
+          image.setText("none");
+        }
         // find the correct choice
         if (group.getSelectedToggle().equals(button1)) {
           answer = choice1.getText();

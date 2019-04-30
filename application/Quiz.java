@@ -17,7 +17,7 @@ public class Quiz {
 
   Quiz(List<Question> questions) {
     this.quizQuestion = questions;
-    this.score = questions.size();
+    this.score = 0;
   }
 
   public List<Question> getQuizQuestion() {
@@ -25,8 +25,8 @@ public class Quiz {
   }
 
   // Set score 1 point off.
-  public void pointDeduction() {
-    score--;
+  public void pointIncrement() {
+    score++;
   }
 
   // Convert score to percentage and return
