@@ -169,14 +169,14 @@ public class UserInterface extends Application {
     // initialize a HBox for text of the question
     // and add to the vbox
     HBox hbox = new HBox();
-    TextField question = new TextField();
+    TextField question = new TextField();  // text field for question
     question.setPromptText("Type in question");
     hbox.getChildren().addAll(new Text("Text: "), question);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER); // align to the center
     // initialize a new HBox for topic of the question
     hbox = new HBox();
-    TextField topic = new TextField();
+    TextField topic = new TextField();  // text field for topic
     topic.setPromptText("Type in topic");
     hbox.getChildren().addAll(new Text("Topic: "), topic);
     vbox.getChildren().add(hbox);
@@ -184,7 +184,7 @@ public class UserInterface extends Application {
     // initialize a new HBox for Image file name of the question
     hbox = new HBox();
     TextField image = new TextField();
-    image.setPromptText("Type in image name");
+    image.setPromptText("Type in image name");  // text field for image path
     hbox.getChildren().addAll(new Text("Image: "), image);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
@@ -196,26 +196,50 @@ public class UserInterface extends Application {
 
     // toggle group of radio buttons so that only one selection can be chosen
     ToggleGroup group = new ToggleGroup();
-    RadioButton button = new RadioButton();
-    button.setToggleGroup(group);
-    button.setSelected(true);
+    // five radio buttons corresponding to five text fields
+    RadioButton button1 = new RadioButton();  
+    RadioButton button2 = new RadioButton();
+    RadioButton button3 = new RadioButton();
+    RadioButton button4 = new RadioButton();
+    RadioButton button5 = new RadioButton();
+    // add buttons into togglegroup
+    button1.setToggleGroup(group);
+    button2.setToggleGroup(group);
+    button3.setToggleGroup(group);
+    button4.setToggleGroup(group);
+    button5.setToggleGroup(group);
+    button1.setSelected(true);
+    
+    TextField choice1 = new TextField();
+    TextField choice2 = new TextField();
+    TextField choice3 = new TextField();
+    TextField choice4 = new TextField();
+    TextField choice5 = new TextField();
+    choice1.setPromptText("Choice 1");
     hbox = new HBox();
-    TextField choice = new TextField();
-    choice.setPromptText("Choice 1");
-    hbox.getChildren().addAll(button, choice);
+    hbox.getChildren().setAll(button1, choice1);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
-    for (int i = 1; i < 5; i++) {
-      hbox = new HBox();
-      button = new RadioButton();
-      button.setToggleGroup(group);
-      choice = new TextField();
-      choice.setPromptText("Choice " + (i + 1));
-      // TODO set action here
-      hbox.getChildren().addAll(button, choice);
-      vbox.getChildren().add(hbox);
-      hbox.setAlignment(Pos.CENTER);
-    }
+    choice2.setPromptText("Choice 2");
+    hbox = new HBox();
+    hbox.getChildren().setAll(button2, choice2);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    choice3.setPromptText("Choice 3");
+    hbox = new HBox();
+    hbox.getChildren().setAll(button3, choice3);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    choice4.setPromptText("Choice 4");
+    hbox = new HBox();
+    hbox.getChildren().setAll(button4, choice4);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    choice5.setPromptText("Choice 5");
+    hbox = new HBox();
+    hbox.getChildren().setAll(button5, choice5);
+    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
     vbox.setSpacing(10);
 
     Button saveButton = new Button("Add");
@@ -229,8 +253,32 @@ public class UserInterface extends Application {
       @Override
       public void handle(MouseEvent me) {
         main.setRoot(root);
-        // TODO add new question
-        System.out.println("Go back to root");
+        String[] choiceArray = new String[5];
+        String answer;
+        choiceArray[0] = choice1.getText();
+        choiceArray[1] = choice2.getText();
+        choiceArray[2] = choice3.getText();
+        choiceArray[3] = choice4.getText();
+        choiceArray[4] = choice5.getText();
+        // find the correct choice
+        if (group.getSelectedToggle().equals(button1)) {
+          answer = choice1.getText();
+        } else if (group.getSelectedToggle().equals(button2)) {
+          answer = choice2.getText();
+        } else if (group.getSelectedToggle().equals(button3)) {
+          answer = choice3.getText();
+        } else if (group.getSelectedToggle().equals(button4)) {
+          answer = choice4.getText();
+        } else{
+          answer = choice5.getText();
+        }
+        Question newQuestion = new Question(
+            question.getText(),
+            choiceArray,
+            image.getText(),
+            topic.getText(),
+            answer);
+        quizGenerator.addNewQuestion(newQuestion);
       }
     });
     cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
