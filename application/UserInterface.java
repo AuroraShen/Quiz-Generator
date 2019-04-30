@@ -62,7 +62,9 @@ public class UserInterface extends Application {
   BorderPane root; // the main menu
   Insets insets = new Insets(10);
   private int loadNum = 0; //
-
+  String inputFileName = null;
+  int count; // Count how many questions have been answered
+  
   /**
    * 
    * @return
@@ -103,8 +105,8 @@ public class UserInterface extends Application {
     loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        activate("load1");
-        setupScreens("load1");
+        activate("beforeLoading");
+        setupScreens("beforeLoading");
         System.out.println("load questions");
       }
     });
@@ -125,7 +127,7 @@ public class UserInterface extends Application {
    * This method initializes all screens that we need
    */
   public void initializeScreens() {
-    String[] screenNames = {"add", "load1", "load2", "next", "save", "exit"};
+    String[] screenNames = {"add", "load1", "load2", "next", "save", "exit", "beforeLoading"};
     for (String name : screenNames) {
       this.addScreen(name);
     }
@@ -339,8 +341,16 @@ public class UserInterface extends Application {
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
     currScreen.setTop(text);
 
-    ObservableList<String> topics =
-        FXCollections.observableArrayList("Topic 1", "Topic 2", "Topic 3");
+    Object[] topicArray = quizGenerator.getTopicList().toArray();
+
+    ObservableList<String> topics = FXCollections.observableArrayList((String) topicArray[0]);
+
+    if (topicArray.length > 1) {
+      for (int i = 1; i < topicArray.length; i++) {
+        topics.add((String) topicArray[i]);
+      }
+    }
+
     final ComboBox topicComboBox = new ComboBox(topics);
     topicComboBox.getSelectionModel().selectFirst();
     HBox hbox = new HBox(); // hbox for topic prompt
@@ -348,20 +358,13 @@ public class UserInterface extends Application {
     HBox numberQuestionHBox = new HBox(); // hbox for number of question prompt
     TextField questionNum = new TextField();
     numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), questionNum);
-    // TODO set action here
+    // TODO prevent user from selecting invalid amount of questions
     hbox.setAlignment(Pos.CENTER);
     numberQuestionHBox.setAlignment(Pos.CENTER);
 
 
     vbox.getChildren().add(hbox);
     vbox.getChildren().add(numberQuestionHBox);
-    hbox = new HBox();
-    TextField fileName = new TextField();
-    fileName.setPromptText("Enter the file name");
-    hbox.getChildren().addAll(new Text("Question file: "), fileName);
-    // TODO set action here
-    hbox.setAlignment(Pos.CENTER);
-    vbox.getChildren().add(hbox);
 
     vbox.setSpacing(10);
     vbox.setAlignment(Pos.CENTER);
@@ -381,13 +384,27 @@ public class UserInterface extends Application {
     loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        setupScreens("load2");
-        activate("load2");
-        System.out.println("Test");
+        int amountLimit =
+            quizGenerator.getNumberOfQuestionsInTopic((String) topicComboBox.getValue());
+        if (Integer.parseInt(questionNum.getText()) <= amountLimit) {
+          try {
+            generateQuiz(inputFileName, (String) topicComboBox.getValue(), amountLimit);
+          } catch (IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          setupScreens("load2");
+          activate("load2");
+          System.out.println("Question loaded");
+          count = 0;
+        } else {
+          questionNum.clear();
+          questionNum.setPromptText("Maximum: " + amountLimit);
+        }
       }
     });
 
-    buttons.getChildren().addAll(backButton, loadButton);
+    buttons.getChildren().addAll(loadButton, backButton);
     buttons.setAlignment(Pos.CENTER_RIGHT);
     buttons.setSpacing(10);
     currScreen.setBottom(buttons);
@@ -398,52 +415,19 @@ public class UserInterface extends Application {
   }
 
   public void setUpLoad2Screen(BorderPane pane) {
-    VBox vbox = new VBox();
-    BorderPane currentScreen = pane;
-    Text text = new Text("Quiz");
-    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-    currentScreen.setTop(text);
+    count = 0;
+    List<Question> quizQuestion = quizGenerator.getQuiz().getQuizQuestion();
+
+
+    ToggleGroup answergroup = showQuestion(pane, quizQuestion);
+    
     HBox hbox = new HBox();
-    vbox.getChildren().add(new Text(
-        "Question: (We will show question here. \nThe space below is for image. It will show image if there is.)"));
-    // hbox.getChildren().addAll(new Text("Question Text: "), questionLabel);
-    // currentScreen.setCenter(questionLabel);
-    // the question image display
-    // Image questionImage = new Image("question.jpg");
-    ImageView myimage = new ImageView();
-    myimage.setFitHeight(200);
-    myimage.setFitWidth(400);
-    vbox.getChildren().add(myimage);
-    // currentScreen.setCenter(myimage);
-    // the choice display
-    ToggleGroup answergroup = new ToggleGroup();
-    RadioButton answerbutton = new RadioButton();
-    answerbutton.setToggleGroup(answergroup);
-    answerbutton.setSelected(true);
-    hbox = new HBox();
-    hbox.getChildren().addAll(answerbutton, new Text("Choice 1"));
-    vbox.getChildren().add(hbox);
-    hbox.setAlignment(Pos.CENTER);
-    for (int i = 0; i < 4; i++) {
-      hbox = new HBox();
-      RadioButton button = new RadioButton();
-      button.setToggleGroup(answergroup);
-      //TODO replace next with certain content
-      hbox.getChildren().addAll(button, new Text("Choice " + (i + 2)));
-      vbox.getChildren().add(hbox);
-      hbox.setAlignment(Pos.CENTER);
-    }
-    vbox.setSpacing(10);
-
-    currentScreen.setCenter(vbox);
-
-    hbox = new HBox();
     // the submit button
     Button submit = new Button("Submit");
     Button next = new Button("Next");
     hbox.getChildren().addAll(submit, next);
     hbox.setAlignment(Pos.CENTER_RIGHT);
-    currentScreen.setBottom(hbox);
+    pane.setBottom(hbox);
     hbox.setSpacing(10);
 
     submit.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -457,13 +441,32 @@ public class UserInterface extends Application {
     next.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        setupScreens("next");
-        activate("next");
+        RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
+        String toogleGroupValue = selectedRadioButton.getText();
+        grade(toogleGroupValue, quizQuestion.get(count));
+        if (count == quizQuestion.size()-1) {
+          setupScreens("next");
+          activate("next");
+        } else {
+          count++;
+          showQuestion(pane, quizQuestion);
+        }
+
       }
     });
     pane.setMargin(pane.getTop(), insets);
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
+  }
+
+  private void grade (String choice, Question question) {
+    if (choice.equals(question.getCorrect())) {
+      System.out.println("correct");
+    } else {
+      System.out.println("incorrect");
+      System.out.println(choice);
+      System.out.println(question.getCorrect());
+    }
   }
 
   public void setUpNextScreen(BorderPane pane) {
@@ -537,16 +540,16 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getTop(), insets);
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
-    
+
     save.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         // TODO save info to file
         try {
           quizGenerator.save(fileName.getText());
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
           System.out.println("File Not Found");
-        } catch(Exception e) {
+        } catch (Exception e) {
           System.out.println("Unexcepted exception occured in save screen");
         }
 
@@ -612,6 +615,58 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
   }
 
+  public void setUpBeforeLoadingScreen(BorderPane pane) {
+    VBox vbox = new VBox();
+    BorderPane currScreen = pane;
+    Text text = new Text("Load question");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    currScreen.setTop(text);
+
+    HBox hbox = new HBox();
+    TextField fileName = new TextField();
+    fileName.setPromptText("e.g. questions_001.json");
+    hbox.getChildren().addAll(new Text("Question file: "), fileName);
+    hbox.setAlignment(Pos.CENTER);
+    currScreen.setCenter(hbox);
+
+    HBox buttons = new HBox();
+
+    Button loadButton = new Button("Load");
+    loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        inputFileName = fileName.getText();
+        try {
+          quizGenerator.addQuestionFromFile(inputFileName);
+        } catch (IOException | ParseException e) {
+          // TODO handle all exceptions properly
+          System.out.println("Unexpected exception occured in beforeLoading screen");
+        }
+        setupScreens("load1");
+        activate("load1");
+        System.out.println("Test");
+      }
+    });
+
+    Button cancelButton = new Button("Cancel");
+    cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        System.out.println("go back");
+        main.setRoot(root);
+      }
+    });
+
+    buttons.getChildren().addAll(loadButton, cancelButton);
+    buttons.setAlignment(Pos.CENTER_RIGHT);
+    buttons.setSpacing(10);
+    currScreen.setBottom(buttons);
+    currScreen.setAlignment(buttons, Pos.CENTER_RIGHT);
+    pane.setMargin(pane.getTop(), insets);
+    pane.setMargin(pane.getCenter(), insets);
+    pane.setMargin(pane.getBottom(), insets);
+  }
+  
   public void setupScreens(String name) {
     VBox vbox;
     HBox hbox;
@@ -637,6 +692,9 @@ public class UserInterface extends Application {
       case "exit":
         this.setUpExitScreen(screenMap.get(name));
         break;
+      case "beforeLoading":
+        this.setUpBeforeLoadingScreen(screenMap.get(name));
+        break;
     }
 
   }
@@ -648,6 +706,61 @@ public class UserInterface extends Application {
 
   protected void removeScreen(String name) {
     screenMap.remove(name);
+  }
+  
+  public ToggleGroup showQuestion(BorderPane pane, List<Question> quizQuestion) {
+    VBox vbox = new VBox();
+    BorderPane currentScreen = pane;
+    Text text = new Text("Quiz");
+    text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+    currentScreen.setTop(text);
+    HBox hbox = new HBox();
+//    List<Question> questionBank = quizGenerator.getQuestionBank();
+//    System.out.println(questionBank.get(count).getQuestion());
+    System.out.println("show question at index: "+count);
+    Text questionText = new Text(10,20, quizQuestion.get(count).getQuestion());
+    questionText.setWrappingWidth(500);
+    vbox.getChildren().add(questionText);
+    String[] choices = quizQuestion.get(count).getChoices();
+
+    // Image part
+    // TODO how does image path look like?
+    String imagePath = quizQuestion.get(count).getImage();
+    ImageView image;
+    if(!imagePath.equals("none")) {
+      image = new ImageView(imagePath);
+    } else { // leave an empty frame
+      image = new ImageView();
+    }
+    image.setFitHeight(200);
+    image.setFitWidth(200);
+    vbox.getChildren().add(image);
+    // currentScreen.setCenter(myimage);
+    // the choice display
+    ToggleGroup answergroup = new ToggleGroup();
+    RadioButton answerbutton = new RadioButton();
+    answerbutton.setToggleGroup(answergroup);
+//    hbox = new HBox();
+//    hbox.getChildren().addAll(answerbutton, new Text(choices[0]));
+//    vbox.getChildren().add(hbox);
+    hbox.setAlignment(Pos.CENTER);
+    for (int i = 0; i < 5; i++) {
+      hbox = new HBox();
+      RadioButton button = new RadioButton(choices[i]);
+      button.setToggleGroup(answergroup);
+      vbox.getChildren().add(button);
+    }
+    vbox.setAlignment(Pos.CENTER);
+    vbox.setSpacing(10);
+
+    // TODO grade
+//    RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
+//    String toogleGroupValue = selectedRadioButton.getText();
+//    System.out.println(toogleGroupValue);
+
+    currentScreen.setCenter(vbox);
+    
+    return answergroup;
   }
 
   /**
