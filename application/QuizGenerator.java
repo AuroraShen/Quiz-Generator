@@ -61,7 +61,7 @@ public class QuizGenerator {
       String imagePath = (String) obj.get("image");
       // Read through choices
       JSONArray choiceArray = (JSONArray) obj.get("choiceArray");
-      String[] choices = new String[5];
+      String[] choices = new String[choiceArray.size()];
       String correctAnswer = "";  // correct answer is set to empty initially
       int index = 0;
       for (int i = 0; i < choiceArray.size(); i++) {

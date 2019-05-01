@@ -42,6 +42,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import java.io.FileNotFoundException;
@@ -64,7 +65,58 @@ public class UserInterface extends Application {
   private int loadNum = 0; //
   String inputFileName = null;
   int count; // Count how many questions have been answered
-  
+  List<String> filesOpened = new ArrayList<>();
+
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+    try {
+      this.stage = primaryStage;
+      primaryStage.setTitle("Quiz Generator");
+      root = new BorderPane();
+      main = new Scene(root, 600, 600);
+
+
+      Text title = new Text("Quiz Generator");
+      // title.setFont(Font.font("Courier", 26));
+      title.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
+      root.setTop(title);
+      Insets inset = new Insets(30);
+      root.setMargin(root.getTop(), inset);
+      root.setAlignment(title, Pos.CENTER);
+      root.setCenter(this.setUpRootScreen());
+      Button exitButton = new Button("Exit");
+      exitButton.setPrefSize(150, 60);
+      HBox hbox = new HBox();
+      hbox.getChildren().add(exitButton);
+      hbox.setAlignment(Pos.TOP_CENTER);
+      hbox.setPadding(new Insets(30));
+      root.setBottom(hbox);
+      root.setAlignment(exitButton, Pos.CENTER);
+
+      exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent me) {
+          activate("exit"); // call activate method to set scene
+          setupScreens("exit");
+          System.out.println("Exit warning page");
+        }
+      });
+
+      initializeScreens();
+
+      main.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+      primaryStage.setScene(main);
+      primaryStage.show();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  public static void main(String[] args) {
+    launch(args);
+  }
+
   /**
    * 
    * @return
@@ -145,15 +197,8 @@ public class UserInterface extends Application {
     // TODO read topic and number of questions from load1 screen
   }
 
-  public void generateQuiz(String filePath, String topic, int amount)
+  public void generateQuiz(String topic, int amount)
       throws FileNotFoundException, IOException, ParseException {
-    // TODO generate quizs based on user's choice
-    try {
-      quizGenerator.addQuestionFromFile(filePath);
-    } catch (Exception e) {
-      System.out.println("Unexpected exception occured");
-    }
-
     quizGenerator.generateQuiz(topic, amount);
   }
 
@@ -173,14 +218,14 @@ public class UserInterface extends Application {
     // initialize a HBox for text of the question
     // and add to the vbox
     HBox hbox = new HBox();
-    TextField question = new TextField();  // text field for question
+    TextField question = new TextField(); // text field for question
     question.setPromptText("Type in question");
     hbox.getChildren().addAll(new Text("Text: "), question);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER); // align to the center
     // initialize a new HBox for topic of the question
     hbox = new HBox();
-    TextField topic = new TextField();  // text field for topic
+    TextField topic = new TextField(); // text field for topic
     topic.setPromptText("Type in topic");
     hbox.getChildren().addAll(new Text("Topic: "), topic);
     vbox.getChildren().add(hbox);
@@ -188,7 +233,7 @@ public class UserInterface extends Application {
     // initialize a new HBox for Image file name of the question
     hbox = new HBox();
     TextField image = new TextField();
-    image.setPromptText("Type in image name");  // text field for image path
+    image.setPromptText("Type in image name"); // text field for image path
     hbox.getChildren().addAll(new Text("Image: "), image);
     vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
@@ -201,7 +246,7 @@ public class UserInterface extends Application {
     // toggle group of radio buttons so that only one selection can be chosen
     ToggleGroup group = new ToggleGroup();
     // five radio buttons corresponding to five text fields
-    RadioButton button1 = new RadioButton();  
+    RadioButton button1 = new RadioButton();
     RadioButton button2 = new RadioButton();
     RadioButton button3 = new RadioButton();
     RadioButton button4 = new RadioButton();
@@ -213,7 +258,7 @@ public class UserInterface extends Application {
     button4.setToggleGroup(group);
     button5.setToggleGroup(group);
     button1.setSelected(true);
-    
+
     TextField choice1 = new TextField();
     TextField choice2 = new TextField();
     TextField choice3 = new TextField();
@@ -264,8 +309,8 @@ public class UserInterface extends Application {
         choiceArray[2] = choice3.getText();
         choiceArray[3] = choice4.getText();
         choiceArray[4] = choice5.getText();
-        
-        for (String txt: choiceArray) {
+
+        for (String txt : choiceArray) {
           System.out.println(txt);
           if (txt.isEmpty()) {
             System.out.println("a");
@@ -279,9 +324,8 @@ public class UserInterface extends Application {
             return;
           }
         }
-        
-        if (question.getText().isEmpty() ||
-            topic.getText().isEmpty()) {
+
+        if (question.getText().isEmpty() || topic.getText().isEmpty()) {
           System.out.println("a");
           Alert alert = new Alert(AlertType.INFORMATION);
           alert.setTitle("Alert");
@@ -292,7 +336,7 @@ public class UserInterface extends Application {
           alert.showAndWait();
           return;
         }
-        
+
         if (image.getText().isEmpty()) {
           image.setText("none");
         }
@@ -305,15 +349,11 @@ public class UserInterface extends Application {
           answer = choice3.getText();
         } else if (group.getSelectedToggle().equals(button4)) {
           answer = choice4.getText();
-        } else{
+        } else {
           answer = choice5.getText();
         }
-        Question newQuestion = new Question(
-            question.getText(),
-            choiceArray,
-            image.getText(),
-            topic.getText(),
-            answer);
+        Question newQuestion =
+            new Question(question.getText(), choiceArray, image.getText(), topic.getText(), answer);
         quizGenerator.addNewQuestion(newQuestion);
       }
     });
@@ -386,20 +426,40 @@ public class UserInterface extends Application {
       public void handle(MouseEvent me) {
         int amountLimit =
             quizGenerator.getNumberOfQuestionsInTopic((String) topicComboBox.getValue());
-        if (Integer.parseInt(questionNum.getText()) <= amountLimit) {
-          try {
-            generateQuiz(inputFileName, (String) topicComboBox.getValue(), amountLimit);
-          } catch (IOException | ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-          setupScreens("load2");
-          activate("load2");
-          System.out.println("Question loaded");
-          count = 0;
+        if(questionNum.getText().isEmpty()) {
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("You must enter a amount of questions");
+          alert.showAndWait();
         } else {
-          questionNum.clear();
-          questionNum.setPromptText("Maximum: " + amountLimit);
+          try {
+            int requestNum = Integer.parseInt(questionNum.getText());
+            if (requestNum > amountLimit) {
+              Alert alert = new Alert(AlertType.INFORMATION);
+              alert.setTitle("Alert");
+              alert.setHeaderText("Excessive question amount");
+              alert.setContentText("You entered an amount is more than questions we have,"
+                  + "you will only be able to take " + amountLimit + " questions this time");
+              alert.showAndWait();
+              requestNum = amountLimit;
+            }
+            try {
+              generateQuiz((String) topicComboBox.getValue(), requestNum);
+            } catch (IOException | ParseException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            setupScreens("load2");
+            activate("load2");
+            System.out.println("Question loaded");
+            count = 0;
+          } catch(NumberFormatException e) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Alert");
+            alert.setHeaderText("You must enter a number");
+            alert.showAndWait();
+            questionNum.clear();
+          }
         }
       }
     });
@@ -420,7 +480,7 @@ public class UserInterface extends Application {
 
 
     ToggleGroup answergroup = showQuestion(pane, quizQuestion);
-    
+
     HBox hbox = new HBox();
     // the submit button
     Button submit = new Button("Submit");
@@ -442,16 +502,22 @@ public class UserInterface extends Application {
       @Override
       public void handle(MouseEvent me) {
         RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
-        String toogleGroupValue = selectedRadioButton.getText();
-        grade(toogleGroupValue, quizQuestion.get(count));
-        if (count == quizQuestion.size()-1) {
-          setupScreens("next");
-          activate("next");
+        if(selectedRadioButton != null) {
+          String toogleGroupValue = selectedRadioButton.getText();
+          grade(toogleGroupValue, quizQuestion.get(count));
+          if (count == quizQuestion.size() - 1) {
+            setupScreens("next");
+            activate("next");
+          } else {
+            count++;
+            showQuestion(pane, quizQuestion);
+          }
         } else {
-          count++;
-          showQuestion(pane, quizQuestion);
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("You must select one choice before move on");
+          alert.showAndWait();
         }
-
       }
     });
     pane.setMargin(pane.getTop(), insets);
@@ -459,24 +525,26 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getBottom(), insets);
   }
 
-  private void grade (String choice, Question question) {
+  private void grade(String choice, Question question) {
+    Alert alert = new Alert(AlertType.INFORMATION);
+    alert.setTitle("Result");
     if (choice.equals(question.getCorrect())) {
-      System.out.println("correct");
+      alert.setHeaderText("Correct!");
+      quizGenerator.getQuiz().pointIncrement();
     } else {
-      System.out.println("incorrect");
-      System.out.println(choice);
-      System.out.println(question.getCorrect());
+      alert.setHeaderText("Incorrect!");
     }
+    alert.setContentText("Click on the button below to move on when you are ready!");
+    alert.showAndWait();
   }
 
   public void setUpNextScreen(BorderPane pane) {
-    // TODO goes to final result only if run out of questions.
     Text text = new Text("Result");
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
     pane.setTop(text);
     HBox hbox = new HBox();
-    hbox.getChildren().addAll(new Text("Score:  "), new Text(
-        "Will display score. According to our design, this screen will be activated \nif running out of questions or clicking on submit. \nFor now, we haven't set it up yet"));
+    hbox.getChildren().addAll(new Text("Score:  "),
+        new Text(Double.toString(quizGenerator.getQuiz().getScore())), new Text(" %"));
     pane.setCenter(hbox);
     pane.setAlignment(hbox, Pos.CENTER);
     pane.setMargin(hbox, insets);
@@ -637,14 +705,28 @@ public class UserInterface extends Application {
       public void handle(MouseEvent me) {
         inputFileName = fileName.getText();
         try {
-          quizGenerator.addQuestionFromFile(inputFileName);
+          if(!filesOpened.contains(inputFileName)) {
+            // Add questions in here
+            quizGenerator.addQuestionFromFile(inputFileName);
+            filesOpened.add(inputFileName);
+            setupScreens("load1");
+            activate("load1");
+          } else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Alert");
+            alert.setHeaderText("The file has been read");
+            alert.setContentText("Please enter a different file");
+            alert.showAndWait();
+            fileName.clear();
+          }
         } catch (IOException | ParseException e) {
-          // TODO handle all exceptions properly
-          System.out.println("Unexpected exception occured in beforeLoading screen");
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("Cannot open or read file");
+          alert.setContentText("Please check the file name you entered");
+          alert.showAndWait();
+          fileName.clear();
         }
-        setupScreens("load1");
-        activate("load1");
-        System.out.println("Test");
       }
     });
 
@@ -656,6 +738,7 @@ public class UserInterface extends Application {
         main.setRoot(root);
       }
     });
+    
 
     buttons.getChildren().addAll(loadButton, cancelButton);
     buttons.setAlignment(Pos.CENTER_RIGHT);
@@ -666,7 +749,7 @@ public class UserInterface extends Application {
     pane.setMargin(pane.getCenter(), insets);
     pane.setMargin(pane.getBottom(), insets);
   }
-  
+
   public void setupScreens(String name) {
     VBox vbox;
     HBox hbox;
@@ -707,7 +790,7 @@ public class UserInterface extends Application {
   protected void removeScreen(String name) {
     screenMap.remove(name);
   }
-  
+
   public ToggleGroup showQuestion(BorderPane pane, List<Question> quizQuestion) {
     VBox vbox = new VBox();
     BorderPane currentScreen = pane;
@@ -715,10 +798,10 @@ public class UserInterface extends Application {
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
     currentScreen.setTop(text);
     HBox hbox = new HBox();
-//    List<Question> questionBank = quizGenerator.getQuestionBank();
-//    System.out.println(questionBank.get(count).getQuestion());
-    System.out.println("show question at index: "+count);
-    Text questionText = new Text(10,20, quizQuestion.get(count).getQuestion());
+    // List<Question> questionBank = quizGenerator.getQuestionBank();
+    // System.out.println(questionBank.get(count).getQuestion());
+    System.out.println("show question at index: " + count);
+    Text questionText = new Text(10, 20, quizQuestion.get(count).getQuestion());
     questionText.setWrappingWidth(500);
     vbox.getChildren().add(questionText);
     String[] choices = quizQuestion.get(count).getChoices();
@@ -727,7 +810,7 @@ public class UserInterface extends Application {
     // TODO how does image path look like?
     String imagePath = quizQuestion.get(count).getImage();
     ImageView image;
-    if(!imagePath.equals("none")) {
+    if (!imagePath.equals("none")) {
       image = new ImageView(imagePath);
     } else { // leave an empty frame
       image = new ImageView();
@@ -740,11 +823,11 @@ public class UserInterface extends Application {
     ToggleGroup answergroup = new ToggleGroup();
     RadioButton answerbutton = new RadioButton();
     answerbutton.setToggleGroup(answergroup);
-//    hbox = new HBox();
-//    hbox.getChildren().addAll(answerbutton, new Text(choices[0]));
-//    vbox.getChildren().add(hbox);
+    // hbox = new HBox();
+    // hbox.getChildren().addAll(answerbutton, new Text(choices[0]));
+    // vbox.getChildren().add(hbox);
     hbox.setAlignment(Pos.CENTER);
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < choices.length; i++) {
       hbox = new HBox();
       RadioButton button = new RadioButton(choices[i]);
       button.setToggleGroup(answergroup);
@@ -754,12 +837,12 @@ public class UserInterface extends Application {
     vbox.setSpacing(10);
 
     // TODO grade
-//    RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
-//    String toogleGroupValue = selectedRadioButton.getText();
-//    System.out.println(toogleGroupValue);
+    // RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
+    // String toogleGroupValue = selectedRadioButton.getText();
+    // System.out.println(toogleGroupValue);
 
     currentScreen.setCenter(vbox);
-    
+
     return answergroup;
   }
 
@@ -772,54 +855,6 @@ public class UserInterface extends Application {
     main.setRoot(screenMap.get(name));
   }
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    try {
-      this.stage = primaryStage;
-      primaryStage.setTitle("Quiz Generator");
-      root = new BorderPane();
-      main = new Scene(root, 600, 600);
 
-
-      Text title = new Text("Quiz Generator");
-      // title.setFont(Font.font("Courier", 26));
-      title.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
-      root.setTop(title);
-      Insets inset = new Insets(30);
-      root.setMargin(root.getTop(), inset);
-      root.setAlignment(title, Pos.CENTER);
-      root.setCenter(this.setUpRootScreen());
-      Button exitButton = new Button("Exit");
-      exitButton.setPrefSize(150, 60);
-      HBox hbox = new HBox();
-      hbox.getChildren().add(exitButton);
-      hbox.setAlignment(Pos.TOP_CENTER);
-      hbox.setPadding(new Insets(30));
-      root.setBottom(hbox);
-      root.setAlignment(exitButton, Pos.CENTER);
-
-      exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent me) {
-          activate("exit"); // call activate method to set scene
-          setupScreens("exit");
-          System.out.println("Exit warning page");
-        }
-      });
-
-      initializeScreens();
-
-      main.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-      primaryStage.setScene(main);
-      primaryStage.show();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  public static void main(String[] args) {
-    launch(args);
-  }
 
 }
