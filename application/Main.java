@@ -449,7 +449,7 @@ public class Main extends Application {
             quizGenerator.addQuestionFromFile(inputFileName);
             filesOpened.add(inputFileName);
             main.setRoot(root);
-            saved = false;
+            saved = false; // Successfully read means there is unsaved changes
           } else { // Warn user that the file entered has been read in already
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Alert");
@@ -498,7 +498,7 @@ public class Main extends Application {
     if (quizGenerator.getQuestionBank().isEmpty()) {
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Empty Quesiton Bank");
-      alert.setHeaderText("You must load questions using files or one by one");
+      alert.setHeaderText("You must load questions using files or add manually");
       alert.showAndWait();
       main.setRoot(root);
       return;
