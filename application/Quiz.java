@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class Quiz {
 
-  List<Question> quizQuestion;  // the list of questions in this quiz
-  double score;  // user's score
+  private List<Question> quizQuestion;  // the list of questions in this quiz
+  private double score;  // user's score
 
   Quiz(List<Question> questions) {
     this.quizQuestion = questions;
