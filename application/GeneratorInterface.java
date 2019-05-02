@@ -23,7 +23,7 @@ import org.json.simple.parser.ParseException;
  *  Can add single question to the question bank
  *  Use ListADT java.io
  */
-public interface GeneratorADT {
+public interface GeneratorInterface {
   
   /**
    * This reads questions from a json file

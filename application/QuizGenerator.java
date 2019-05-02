@@ -37,7 +37,7 @@ import org.json.simple.parser.ParseException;
  * @author Jiawei Gu
  *
  */
-public class QuizGenerator implements GeneratorADT {
+public class QuizGenerator implements GeneratorInterface {
 
   private Quiz quiz;  // current quiz
   private ArrayList<Question> questionBank;  // all the questions that we have
