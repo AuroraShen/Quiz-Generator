@@ -287,27 +287,11 @@ public class UserInterface extends Application {
         choiceArray[3] = choice4.getText();
         choiceArray[4] = choice5.getText();
 
-        for (String txt : choiceArray) {
-          System.out.println(txt);
-          if (txt.isEmpty()) {
-            System.out.println("a");
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Alert");
-            alert.setHeaderText("Empty Text Field!");
-            alert.setContentText("choices can not be empty");
-            activate("add");
-            setupScreens("add");
-            alert.showAndWait();
-            return;
-          }
-        }
-
         if (question.getText().isEmpty() || topic.getText().isEmpty()) {
-          System.out.println("a");
           Alert alert = new Alert(AlertType.INFORMATION);
           alert.setTitle("Alert");
           alert.setHeaderText("Empty Text Field!");
-          alert.setContentText("choices can not be empty");
+          alert.setContentText("Question Text can not be empty");
           activate("add");
           setupScreens("add");
           alert.showAndWait();
@@ -317,17 +301,31 @@ public class UserInterface extends Application {
         if (image.getText().isEmpty()) {
           image.setText("none");
         }
+        TextField rightTF;
         // find the correct choice
         if (group.getSelectedToggle().equals(button1)) {
-          answer = choice1.getText();
+          rightTF = choice1;
         } else if (group.getSelectedToggle().equals(button2)) {
-          answer = choice2.getText();
+          rightTF = choice2;
         } else if (group.getSelectedToggle().equals(button3)) {
-          answer = choice3.getText();
+          rightTF = choice3;
         } else if (group.getSelectedToggle().equals(button4)) {
-          answer = choice4.getText();
+          rightTF = choice4;
         } else {
-          answer = choice5.getText();
+          rightTF = choice5;
+        }
+        if (rightTF.getText().isEmpty()) {
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("Empty Right Choice Selected!");
+          alert.setContentText("Empty choice cannot be selected as correct");
+          activate("add");
+          setupScreens("add");
+          alert.showAndWait();
+          return;
+        }
+        else {
+          answer = rightTF.getText();
         }
         Question newQuestion =
             new Question(question.getText(), choiceArray, image.getText(), topic.getText(), answer);
