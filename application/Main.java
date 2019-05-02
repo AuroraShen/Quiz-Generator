@@ -1,8 +1,11 @@
 /**
- * Filename: UserInterface.java Project: Quiz Generator Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
- * Yixing Tu Group: A-Team 68
+ * Filename: UserInterface.java 
+ * Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
+ * Yixing Tu 
+ * Group: A-Team 68
  * 
- * UserInterface class is the main GUI class for this project.
+ * UserInterface class is GUI class for this project.
  * 
  */
 
@@ -107,6 +110,7 @@ public class Main extends Application {
         public void handle(MouseEvent me) {
           activate("exit"); // call activate method to set scene
           setupScreens("exit");
+          System.out.println("Exit warning page");
         }
       });
 
@@ -141,12 +145,14 @@ public class Main extends Application {
     Button addButton = new Button("Add Question"); // add button for "add question" screen
     Button loadButton = new Button("Load Question"); // button for "load question" screen
     Button saveButton = new Button("Save"); // button for "save" screen
+    Button quizButton = new Button("Take Quiz");
     // set preferred size
     addButton.setPrefSize(150, 60);
     loadButton.setPrefSize(150, 60);
     saveButton.setPrefSize(150, 60);
+    quizButton.setPrefSize(150, 60);
     // add buttons to hbox
-    hbox.getChildren().addAll(addButton, loadButton, saveButton);
+    hbox.getChildren().addAll(addButton, loadButton, quizButton, saveButton);
     hbox.setAlignment(Pos.CENTER);
     hbox.setSpacing(10);
 
@@ -156,6 +162,7 @@ public class Main extends Application {
       public void handle(MouseEvent me) {
         activate("add"); // Switch to adding screen
         setupScreens("add"); // Set up
+        System.out.println("add new question");
       }
     });
 
@@ -166,7 +173,15 @@ public class Main extends Application {
         setupScreens("beforeLoading");
       }
     });
-
+    
+    quizButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        activate("load1"); // Switch to save screen
+        setupScreens("load1"); // Set up
+      }
+    });
+    
     saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -392,6 +407,7 @@ public class Main extends Application {
       @Override
       public void handle(MouseEvent me) {
         main.setRoot(root);
+        System.out.println("Go back to root");
       }
     });
 
@@ -435,8 +451,7 @@ public class Main extends Application {
             // Add questions to question bank in generator
             quizGenerator.addQuestionFromFile(inputFileName);
             filesOpened.add(inputFileName);
-            setupScreens("load1");
-            activate("load1");
+            main.setRoot(root);
             saved = false;
           } else { // Warn user that the file entered has been read in already
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -462,29 +477,13 @@ public class Main extends Application {
     cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
+        System.out.println("go back");
         main.setRoot(root);
       }
     });
-    
-    Button skipButton = new Button("skip");
-    skipButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent me) {
-        if(quizGenerator.getQuestionBank().size() == 0) {
-          Alert alert = new Alert(AlertType.INFORMATION);
-          alert.setTitle("Alert");
-          alert.setHeaderText("Cannot skip because the question bank is empty");
-          alert.setContentText("Please add question manually or read questions from file before skipping.");
-          alert.showAndWait();
-        } else {
-          setupScreens("load1");
-          activate("load1");
-        }
-      }
-    });
 
 
-    buttons.getChildren().addAll(loadButton, cancelButton, skipButton);
+    buttons.getChildren().addAll(loadButton, cancelButton);
     buttons.setAlignment(Pos.CENTER_RIGHT);
     buttons.setSpacing(10);
     currScreen.setBottom(buttons);
@@ -500,6 +499,14 @@ public class Main extends Application {
    * @param pane is the pane we are setting up
    */
   public void setUpLoad1Screen(BorderPane pane) {
+    if (quizGenerator.getQuestionBank().isEmpty()) {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Empty Quesiton Bank");
+      alert.setHeaderText("You must load questions using files or one by one");
+      alert.showAndWait();
+      main.setRoot(root);
+      return;
+    }
     VBox vbox = new VBox();
     BorderPane currScreen = pane;
     Text text = new Text("Load question");
