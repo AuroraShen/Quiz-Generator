@@ -65,7 +65,6 @@ public class UserInterface extends Application {
   private Scene main; // Scene to display different panes
   BorderPane root; // the main menu
   Insets insets = new Insets(10);
-  private int loadNum = 0; //
   String inputFileName = null;
   int count; // Count how many questions have been answered
   List<String> filesOpened = new ArrayList<>();
