@@ -107,7 +107,6 @@ public class Main extends Application {
         public void handle(MouseEvent me) {
           activate("exit"); // call activate method to set scene
           setupScreens("exit");
-          System.out.println("Exit warning page");
         }
       });
 
@@ -157,7 +156,6 @@ public class Main extends Application {
       public void handle(MouseEvent me) {
         activate("add"); // Switch to adding screen
         setupScreens("add"); // Set up
-        System.out.println("add new question");
       }
     });
 
@@ -394,7 +392,6 @@ public class Main extends Application {
       @Override
       public void handle(MouseEvent me) {
         main.setRoot(root);
-        System.out.println("Go back to root");
       }
     });
 
@@ -465,13 +462,29 @@ public class Main extends Application {
     cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        System.out.println("go back");
         main.setRoot(root);
+      }
+    });
+    
+    Button skipButton = new Button("skip");
+    skipButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent me) {
+        if(quizGenerator.getQuestionBank().size() == 0) {
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Alert");
+          alert.setHeaderText("Cannot skip because the question bank is empty");
+          alert.setContentText("Please add question manually or read questions from file before skipping.");
+          alert.showAndWait();
+        } else {
+          setupScreens("load1");
+          activate("load1");
+        }
       }
     });
 
 
-    buttons.getChildren().addAll(loadButton, cancelButton);
+    buttons.getChildren().addAll(loadButton, cancelButton, skipButton);
     buttons.setAlignment(Pos.CENTER_RIGHT);
     buttons.setSpacing(10);
     currScreen.setBottom(buttons);
