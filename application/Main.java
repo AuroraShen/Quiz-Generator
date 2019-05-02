@@ -80,7 +80,7 @@ public class Main extends Application {
       this.stage = primaryStage;
       primaryStage.setTitle("Quiz Generator");
       root = new BorderPane();
-      main = new Scene(root, 600, 600);
+      main = new Scene(root, 800, 600);
 
       Text title = new Text("Quiz Generator");
       title.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
