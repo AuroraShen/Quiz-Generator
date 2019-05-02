@@ -410,15 +410,23 @@ public class UserInterface extends Application {
           alert.setTitle("Alert");
           alert.setHeaderText("You must enter a amount of questions");
           alert.showAndWait();
-        } else {
+        } 
+        else if (Integer.parseInt(questionNum.getText()) <= 0) {
+          Alert alert = new Alert(AlertType.INFORMATION);
+          alert.setTitle("Invalid Number");
+          alert.setHeaderText("Number of questions must be a positive number!");
+          alert.showAndWait();
+          questionNum.clear();
+        }
+        else {
           try {
             int requestNum = Integer.parseInt(questionNum.getText());
             if (requestNum > amountLimit) {
               Alert alert = new Alert(AlertType.INFORMATION);
               alert.setTitle("Alert");
               alert.setHeaderText("Excessive question amount");
-              alert.setContentText("You entered an amount is more than questions we have,"
-                  + "you will only be able to take " + amountLimit + " questions this time");
+              alert.setContentText("You entered an amount is more than questions we have,\n"
+                  + "you will only be able to take " + amountLimit + " question(s) this time");
               alert.showAndWait();
               requestNum = amountLimit;
             }
