@@ -381,10 +381,11 @@ public class UserInterface extends Application {
     hbox.setAlignment(Pos.CENTER);
     numberQuestionHBox.setAlignment(Pos.CENTER);
 
-
+    vbox.getChildren()
+        .add(new Text("Total number of questions with all topics avaliable: " + totalNum));
     vbox.getChildren().add(hbox);
     vbox.getChildren().add(numberQuestionHBox);
-    vbox.getChildren().add(new Text("Total number of questions avaliable: " + totalNum));
+
 
     vbox.setSpacing(10);
     vbox.setAlignment(Pos.CENTER);
@@ -533,7 +534,7 @@ public class UserInterface extends Application {
     pane.setTop(text);
     VBox vbox = new VBox();
     vbox.getChildren().add(new Text("Correct: " + quizGenerator.getQuiz().getCorrect()));
-    vbox.getChildren().add(new Text("Questions Answered: " + (count+1)));
+    vbox.getChildren().add(new Text("Questions Answered: " + (count + 1)));
     vbox.getChildren()
         .addAll(new Text("Score:  " + Double.toString(quizGenerator.getQuiz().getScore()) + " %"));
     pane.setCenter(vbox);
@@ -655,8 +656,8 @@ public class UserInterface extends Application {
     vbox.getChildren().addAll(exitMessage, hbox);
     vbox.setSpacing(20);
     vbox.setAlignment(Pos.CENTER);
-    
-    if(saved) {
+
+    if (saved) {
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Note");
       alert.setHeaderText("There is no change not been saved. Click on button below to close.");
