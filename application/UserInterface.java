@@ -66,7 +66,7 @@ public class UserInterface extends Application {
   String inputFileName = null;
   int count; // Count how many questions have been answered
   List<String> filesOpened = new ArrayList<>();
-  boolean saved = false;
+  boolean saved = true;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -184,6 +184,7 @@ public class UserInterface extends Application {
   }
 
   public void setUpAddScreen(BorderPane pane) {
+    saved = false;
     VBox vbox = new VBox();
     TextField textField;
     // Set the text at the top
@@ -657,7 +658,7 @@ public class UserInterface extends Application {
     if(saved) {
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Note");
-      alert.setHeaderText("You have saved changes. Click on button below to close.");
+      alert.setHeaderText("There is no change not been saved. Click on button below to close.");
       alert.showAndWait();
       stage.close();
     }
