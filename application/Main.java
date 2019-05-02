@@ -110,7 +110,6 @@ public class Main extends Application {
         public void handle(MouseEvent me) {
           activate("exit"); // call activate method to set scene
           setupScreens("exit");
-          System.out.println("Exit warning page");
         }
       });
 
@@ -162,7 +161,6 @@ public class Main extends Application {
       public void handle(MouseEvent me) {
         activate("add"); // Switch to adding screen
         setupScreens("add"); // Set up
-        System.out.println("add new question");
       }
     });
 
@@ -407,7 +405,6 @@ public class Main extends Application {
       @Override
       public void handle(MouseEvent me) {
         main.setRoot(root);
-        System.out.println("Go back to root");
       }
     });
 
@@ -477,7 +474,6 @@ public class Main extends Application {
     cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        System.out.println("go back");
         main.setRoot(root);
       }
     });
