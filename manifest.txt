@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Created-By: deppeler
+Created-By: Aaron Zhang
 Main-Class: application.UserInterface
 
