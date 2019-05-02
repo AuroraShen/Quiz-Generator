@@ -1,4 +1,9 @@
 /**
+ * Filename: GeneratorADT.java 
+ * Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
+ * Yixing Tu 
+ * Group: A-Team 68
  * 
  */
 package application;
@@ -10,15 +15,13 @@ import java.util.Set;
 import org.json.simple.parser.ParseException;
 
 /**
- * @author Jiawei Gu
- * 
- *  Use ListADT java.io
  * 
  *  This is the interface for QuizGenerator
  *  It can add questions from a json file of specific format
  *  It can generate quiz based on the topic and desired amount
  *  It can save the current questions to a json file
  *  Can add single question to the question bank
+ *  Use ListADT java.io
  */
 public interface GeneratorADT {
   

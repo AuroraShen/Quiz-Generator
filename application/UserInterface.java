@@ -1,6 +1,9 @@
 /**
- * Filename: UserInterface.java Project: Quiz Generator Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
- * Yixing Tu Group: A-Team 68
+ * Filename: UserInterface.java 
+ * Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
+ * Yixing Tu 
+ * Group: A-Team 68
  * 
  * UserInterface class is the main GUI class for this project.
  * 
@@ -76,7 +79,6 @@ public class UserInterface extends Application {
       root = new BorderPane();
       main = new Scene(root, 600, 600);
 
-
       Text title = new Text("Quiz Generator");
       // title.setFont(Font.font("Courier", 26));
       title.setFont(Font.font("Verdana", FontWeight.BOLD, 50));
@@ -119,7 +121,7 @@ public class UserInterface extends Application {
   }
 
   /**
-   * This method
+   * This method sets up the root screen
    * 
    * @return
    */
@@ -155,7 +157,7 @@ public class UserInterface extends Application {
         System.out.println("load questions");
       }
     });
-
+    
     saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -183,10 +185,15 @@ public class UserInterface extends Application {
     quizGenerator.generateQuiz(topic, amount);
   }
 
+  /**
+   * This method sets up the add screen when Add button is clicked
+   * @param pane
+   */
   public void setUpAddScreen(BorderPane pane) {
-    saved = false;
+    saved = false;  // update new change so that user will be asked to save
     VBox vbox = new VBox();
-    TextField textField;
+    TextField textField;  // common textField reference to use in this method
+    
     // Set the text at the top
     Text text = new Text("Add new question");
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
@@ -236,6 +243,7 @@ public class UserInterface extends Application {
     button5.setToggleGroup(group);
     button1.setSelected(true);
 
+    // set up the text fields for user input
     TextField choice1 = new TextField();
     TextField choice2 = new TextField();
     TextField choice3 = new TextField();
@@ -268,6 +276,7 @@ public class UserInterface extends Application {
     hbox.setAlignment(Pos.CENTER);
     vbox.setSpacing(10);
 
+    // set up the buttons and their functionality
     Button saveButton = new Button("Add");
     Button cancelButton = new Button("Cancel");
     hbox = new HBox();
@@ -275,6 +284,8 @@ public class UserInterface extends Application {
     hbox.setSpacing(10);
     hbox.setAlignment(Pos.CENTER_RIGHT);
 
+    // when save button is clicked, check if any required field is empty
+    // create a new question and save to question bank
     saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -287,6 +298,8 @@ public class UserInterface extends Application {
         choiceArray[3] = choice4.getText();
         choiceArray[4] = choice5.getText();
 
+        // if question text field or topic field is empty
+        // show alert
         if (question.getText().isEmpty() || topic.getText().isEmpty()) {
           Alert alert = new Alert(AlertType.INFORMATION);
           alert.setTitle("Alert");
@@ -297,12 +310,13 @@ public class UserInterface extends Application {
           alert.showAndWait();
           return;
         }
-
+         // image field is not required, if empty, set to "none"
         if (image.getText().isEmpty()) {
           image.setText("none");
         }
-        TextField rightTF;
+        
         // find the correct choice
+        TextField rightTF;
         if (group.getSelectedToggle().equals(button1)) {
           rightTF = choice1;
         } else if (group.getSelectedToggle().equals(button2)) {
@@ -314,6 +328,9 @@ public class UserInterface extends Application {
         } else {
           rightTF = choice5;
         }
+        
+        // if correct choice is empty, display alert
+        // else, set the correct answer
         if (rightTF.getText().isEmpty()) {
           Alert alert = new Alert(AlertType.INFORMATION);
           alert.setTitle("Alert");
@@ -327,11 +344,14 @@ public class UserInterface extends Application {
         else {
           answer = rightTF.getText();
         }
+        
         Question newQuestion =
             new Question(question.getText(), choiceArray, image.getText(), topic.getText(), answer);
         quizGenerator.addNewQuestion(newQuestion);
       }
     });
+    
+    // if cancel button is clicked, go back to root
     cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
