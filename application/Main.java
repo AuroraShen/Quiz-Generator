@@ -946,11 +946,7 @@ public class Main extends Application {
         image = new ImageView();
       }
     } catch (IllegalArgumentException e) { // Cannot open image. Inform user and shows blank
-      image = new ImageView();
-      Alert alert = new Alert(AlertType.INFORMATION);
-      alert.setTitle("Alert");
-      alert.setHeaderText("Cannot load image. You will see question without image.");
-      alert.showAndWait();
+      image = new ImageView("invalidImage.jpg");
     }
     image.setFitHeight(200);
     image.setFitWidth(200);
