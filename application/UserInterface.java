@@ -119,14 +119,6 @@ public class UserInterface extends Application {
   }
 
   /**
-   * 
-   * @return
-   */
-  public BorderPane addPane() {
-    return null;
-  }
-
-  /**
    * This method
    * 
    * @return
@@ -189,11 +181,6 @@ public class UserInterface extends Application {
   public void generateQuiz(String topic, int amount)
       throws FileNotFoundException, IOException, ParseException {
     quizGenerator.generateQuiz(topic, amount);
-  }
-
-  public double getResult() {
-    // TODO show score. Will be called once user submits or running out of questions
-    return quizGenerator.getScore();
   }
 
   public void setUpAddScreen(BorderPane pane) {
@@ -805,10 +792,6 @@ public class UserInterface extends Application {
   public void addScreen(String name) {
     BorderPane pane = new BorderPane();
     screenMap.put(name, pane);
-  }
-
-  protected void removeScreen(String name) {
-    screenMap.remove(name);
   }
 
   public ToggleGroup showQuestion(BorderPane pane, List<Question> quizQuestion) {
