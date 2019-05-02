@@ -1,5 +1,7 @@
 /**
- * Filename: Quiz.java Project: Quiz Generator Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing
+ * Filename: Quiz.java 
+ * Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing
  * Tu Group: A-Team 68
  * 
  * Quiz class represents a created quiz. It stores selected questions.
@@ -10,32 +12,44 @@ package application;
 
 import java.util.List;
 
+/**
+ * This quiz class represent a single quiz
+ * which contains the score of this quiz, 
+ * the question list for this quiz
+ * @author Jiawei Gu
+ *
+ */
 public class Quiz {
 
-  List<Question> quizQuestion;
-  double score;
+  List<Question> quizQuestion;  // the list of questions in this quiz
+  double score;  // user's score
 
   Quiz(List<Question> questions) {
     this.quizQuestion = questions;
     this.score = 0;
   }
 
+  /**
+   * getter method for list of questions
+   * @return
+   */
   public List<Question> getQuizQuestion() {
     return quizQuestion;
   }
 
-  // Set score 1 point off.
+  /**
+   * increment the score 1 point up in case of correct answer
+   */
   public void pointIncrement() {
     score++;
   }
 
-  // Convert score to percentage and return
+  /**
+   * Convert score to percentage and return
+   * @return
+   */
   public double getScore() {
     return (score / quizQuestion.size()) * 100;
   }
   
-  public double getCorrect() {
-    return score;
-  }
-
 }

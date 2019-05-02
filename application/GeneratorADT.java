@@ -11,6 +11,9 @@ import org.json.simple.parser.ParseException;
 
 /**
  * @author Jiawei Gu
+ * 
+ *  Use ListADT java.io
+ * 
  *  This is the interface for QuizGenerator
  *  It can add questions from a json file of specific format
  *  It can generate quiz based on the topic and desired amount

@@ -28,6 +28,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ *  This is the interface for QuizGenerator
+ *  It can add questions from a json file of specific format
+ *  It can generate quiz based on the topic and desired amount
+ *  It can save the current questions to a json file
+ *  Can add single question to the question bank
+ * @author Jiawei Gu
+ *
+ */
 public class QuizGenerator implements GeneratorADT {
 
   private Quiz quiz;  // current quiz
@@ -62,6 +71,7 @@ public class QuizGenerator implements GeneratorADT {
     Iterator itr = questionArray.iterator();  // iterator for questionArray
     Question q;
 
+    // iterate through the question array for every question
     while (itr.hasNext()) {
       JSONObject obj = (JSONObject) itr.next();
       String questionText = (String) obj.get("questionText");
