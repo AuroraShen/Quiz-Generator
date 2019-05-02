@@ -127,6 +127,7 @@ public class QuizGenerator {
           choiceComb.put("isCorrect", "F");
         }
         choiceComb.put("choice", choice);
+        choiceArray.add(choiceComb);
       }
       jsonQuestion.put("choiceArray", choiceArray);
       questionArray.add(jsonQuestion); // add this question to JSONArray
