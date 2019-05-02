@@ -359,6 +359,7 @@ public class UserInterface extends Application {
     currScreen.setTop(text);
 
     Object[] topicArray = quizGenerator.getTopicList().toArray();
+    Arrays.sort(topicArray);
     int totalNum = quizGenerator.getQuestionBank().size();
 
     ObservableList<String> topics = FXCollections.observableArrayList((String) topicArray[0]);
