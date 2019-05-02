@@ -113,6 +113,7 @@ public class QuizGenerator {
     // generate each question to JSONObject and add to question array
     for (Question question : questionBank) {
       JSONObject jsonQuestion = new JSONObject();
+      jsonQuestion.put("meta-data", "unused");
       jsonQuestion.put("questionText", question.getQuestion());
       jsonQuestion.put("topic", question.getTopic());
       jsonQuestion.put("image", question.getImage());
