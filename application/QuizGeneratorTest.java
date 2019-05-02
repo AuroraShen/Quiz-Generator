@@ -63,7 +63,8 @@ public class QuizGeneratorTest {
   public void test00_question_bank_size() {
     try {
       if (qg_000.getQuestionBank().size() != 2) {
-        fail("The size of question bank should be 2, return value is: " + qg_000.getQuestionBank().size());
+        fail("The size of question bank should be 2, return value is: " 
+            + qg_000.getQuestionBank().size());
       }
     } catch (Exception e) {
       fail("Unexpected exception: " + e.getStackTrace());
