@@ -52,4 +52,11 @@ public class Quiz {
     return (score / quizQuestion.size()) * 100;
   }
   
+  /**
+   * returns the score to represent the number of questions that got correct
+   * @return
+   */
+  public int getCorrect() {
+    return (int) score;
+  }
 }

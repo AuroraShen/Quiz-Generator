@@ -1,3 +1,14 @@
+/**
+ * Filename: QuizGeneratorTest.java 
+ * Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
+ * Yixing Tu 
+ * Group: A-Team 68
+ * 
+ * JUnit test to test QuizGenerator.java functions
+ * 
+ */
+
 package application;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -7,8 +18,6 @@ import org.junit.Test;
 
 /**
  * JUnit test to test QuizGenerator class
- * 
- * @author Jiawei Gu
  *
  */
 public class QuizGeneratorTest {
