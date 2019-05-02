@@ -66,6 +66,7 @@ public class UserInterface extends Application {
   String inputFileName = null;
   int count; // Count how many questions have been answered
   List<String> filesOpened = new ArrayList<>();
+  boolean saved = false;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -621,6 +622,7 @@ public class UserInterface extends Application {
         } else {
           try {
             quizGenerator.save(fileName.getText());
+            saved = true;
           } catch (FileNotFoundException e) {
             // TODO
           } catch (Exception e) {
@@ -664,6 +666,14 @@ public class UserInterface extends Application {
     vbox.getChildren().addAll(exitMessage, hbox);
     vbox.setSpacing(20);
     vbox.setAlignment(Pos.CENTER);
+    
+    if(saved) {
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Note");
+      alert.setHeaderText("You have saved changes. Click on button below to close.");
+      alert.showAndWait();
+      stage.close();
+    }
 
     saveQuit.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
@@ -720,6 +730,7 @@ public class UserInterface extends Application {
             filesOpened.add(inputFileName);
             setupScreens("load1");
             activate("load1");
+            saved = false;
           } else {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Alert");
