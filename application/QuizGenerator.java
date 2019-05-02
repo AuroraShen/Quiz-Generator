@@ -167,6 +167,7 @@ public class QuizGenerator implements GeneratorInterface {
   @Override
   public void addNewQuestion(Question newQuestion) {
     questionBank.add(newQuestion);
+    topicList.add(newQuestion.topic);
   }
 
   /**
