@@ -33,5 +33,9 @@ public class Quiz {
   public double getScore() {
     return (score / quizQuestion.size()) * 100;
   }
+  
+  public double getCorrect() {
+    return score;
+  }
 
 }
