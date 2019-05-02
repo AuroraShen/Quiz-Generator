@@ -55,7 +55,7 @@ import org.json.simple.parser.ParseException;
  * 
  * @author Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing Tu
  */
-public class UserInterface extends Application {
+public class Main extends Application {
   QuizGenerator quizGenerator = new QuizGenerator(); // Instance of generator
   boolean needQuit = false; // boolean variable to detect if user wants to quit
   Stage stage; // Primary stage
