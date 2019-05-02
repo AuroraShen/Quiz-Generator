@@ -28,7 +28,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class QuizGenerator {
+public class QuizGenerator implements GeneratorADT {
 
   private Quiz quiz;  // current quiz
   private ArrayList<Question> questionBank;  // all the questions that we have
@@ -42,7 +42,15 @@ public class QuizGenerator {
     topicList = new HashSet<String>();
   }
   
-  // Read in all questions
+  /**
+   * This reads questions from a json file
+   * that we get from the parameter
+   * @param filePath JSON file's path
+   * @throws FileNotFoundException
+   * @throws IOException
+   * @throws ParseException
+   */
+  @Override
   public void addQuestionFromFile(String filePath) 
       throws FileNotFoundException, IOException, ParseException {
     
@@ -88,6 +96,7 @@ public class QuizGenerator {
    * @param topic the topic of the quiz to generate
    * @param amount is number of questions to put into the quiz
    */
+  @Override
   public void generateQuiz(String topic, int amount) {
     ArrayList<Question> quizQuestions = new ArrayList<>();
     for (Question question : questionBank) {
@@ -106,6 +115,7 @@ public class QuizGenerator {
    * 
    * @param filePath the filePath we want to save to
    */
+  @Override
   public void save(String filePath) throws IOException {
     JSONObject quiz = new JSONObject(); // the entire quiz JSONObject
     JSONArray questionArray = new JSONArray();
@@ -144,6 +154,7 @@ public class QuizGenerator {
    * add a new question to the question bank
    * @param newQuestion
    */
+  @Override
   public void addNewQuestion(Question newQuestion) {
     questionBank.add(newQuestion);
   }
@@ -152,6 +163,7 @@ public class QuizGenerator {
    * getter for quiz
    * @return current quiz
    */
+  @Override
   public Quiz getQuiz() {
     return quiz;
   }
@@ -160,6 +172,7 @@ public class QuizGenerator {
    * getter for topic list
    * @return current topic list
    */
+  @Override
   public Set<String> getTopicList() {
     return topicList;
   }
@@ -170,6 +183,7 @@ public class QuizGenerator {
    * @param topic is the topic that we want to find
    * @return number of questions
    */
+  @Override
   public int getNumberOfQuestionsInTopic(String topic) {
     if (!topicList.contains(topic)) {
       return 0;  // if topic is not in the set, simply return 0
@@ -189,10 +203,15 @@ public class QuizGenerator {
    * getter for question bank
    * @return current question bank
    */
+  @Override
   public List<Question> getQuestionBank() {
     return questionBank;
   }
   
+  /**
+   * getter for quiz's score
+   * @return
+   */
   public double getScore() {
     return quiz.getScore();
   }
