@@ -186,7 +186,7 @@ public class QuizGeneratorTest {
    * This checks QuizGenerator's function of generating quiz with multiple topics
    */
   @Test
-  public void test_07_generate_quiz_with_two_topics() {
+  public void test_08_generate_quiz_with_two_topics() {
     try {
       List<String> topicList = new ArrayList<String>();
       topicList.add("linux");
