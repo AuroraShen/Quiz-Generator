@@ -1,9 +1,6 @@
 /**
- * Filename: UserInterface.java 
- * Project: Quiz Generator 
- * Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
- * Yixing Tu 
- * Group: A-Team 68
+ * Filename: UserInterface.java Project: Quiz Generator Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
+ * Yixing Tu Group: A-Team 68
  * 
  * UserInterface class is GUI class for this project.
  * 
@@ -13,6 +10,8 @@ package application;
 
 import javafx.scene.text.Font;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -70,6 +69,7 @@ public class Main extends Application {
   int count; // Count how many questions have been answered
   List<String> filesOpened = new ArrayList<>(); // Record files have been read already
   boolean saved = true; // boolean variable to detect if all changes have been saved properly
+  ToggleGroup answergroup;
 
   /**
    * Driver
@@ -171,7 +171,7 @@ public class Main extends Application {
         setupScreens("beforeLoading");
       }
     });
-    
+
     quizButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -179,7 +179,7 @@ public class Main extends Application {
         setupScreens("load1"); // Set up
       }
     });
-    
+
     saveButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
@@ -229,7 +229,7 @@ public class Main extends Application {
    * @throws IOException
    * @throws ParseException
    */
-  public void generateQuiz(String topic, int amount)
+  public void generateQuiz(List<String> topic, int amount)
       throws FileNotFoundException, IOException, ParseException {
     quizGenerator.generateQuiz(topic, amount);
   }
@@ -446,7 +446,7 @@ public class Main extends Application {
         try {
           if (!filesOpened.contains(inputFileName)) { // Don't read files have been read in
             // Add questions to question bank in generator
-            quizGenerator.addQuestionFromFile(inputFileName);
+            quizGenerator.addQuestionFromFile("questionFile/"+inputFileName);
             filesOpened.add(inputFileName);
             main.setRoot(root);
             saved = false; // Successfully read means there is unsaved changes
@@ -523,20 +523,35 @@ public class Main extends Application {
       }
     }
 
-    // Combo box lists all topics
-    final ComboBox topicComboBox = new ComboBox(topics);
-    topicComboBox.getSelectionModel().selectFirst();
-    HBox hbox = new HBox(); // hbox for topic prompt
-    hbox.getChildren().addAll(new Text("Topic: "), topicComboBox);
-    HBox numberQuestionHBox = new HBox(); // hbox for number of question prompt
+    // Check box lists all topics
+    VBox topicBox = new VBox(); // hbox for topic prompt
+    ArrayList<String> selectedTopic = new ArrayList<String>();
+    for (int i = 0; i < topics.size(); i++) {
+      String st = topics.get(i);
+      CheckBox c = new CheckBox(st);
+      c.selectedProperty().addListener(new ChangeListener<Boolean>() {
+        public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val,
+            Boolean new_val) {
+          if (selectedTopic.contains(st)) {
+            selectedTopic.remove(st);
+          } else {
+            selectedTopic.add(st);
+          }
+        }
+      });
+      topicBox.getChildren().add(c);
+    }
+    topicBox.setAlignment(Pos.CENTER);
+
+    // hbox for number of question prompt
+    HBox numberQuestionHBox = new HBox();
     TextField questionNum = new TextField();
     numberQuestionHBox.getChildren().addAll(new Text("# of Questions: "), questionNum);
-    hbox.setAlignment(Pos.CENTER);
     numberQuestionHBox.setAlignment(Pos.CENTER);
 
     vbox.getChildren()
         .add(new Text("Total number of questions with all topics avaliable: " + totalNum));
-    vbox.getChildren().add(hbox);
+    vbox.getChildren().add(topicBox);
     vbox.getChildren().add(numberQuestionHBox);
 
 
@@ -557,8 +572,10 @@ public class Main extends Application {
     loadButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
-        int amountLimit =
-            quizGenerator.getNumberOfQuestionsInTopic((String) topicComboBox.getValue());
+        int amountLimit = 0;
+        for (int i = 0; i < selectedTopic.size(); i++) {
+          amountLimit += quizGenerator.getNumberOfQuestionsInTopic(selectedTopic.get(i));
+        }
         try {
           if (questionNum.getText().isEmpty()) { // catch empty input
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -584,7 +601,7 @@ public class Main extends Application {
               requestNum = amountLimit;
             }
             try { // Catch exception occurs in combo box
-              generateQuiz((String) topicComboBox.getValue(), requestNum);
+              generateQuiz(selectedTopic, requestNum);
             } catch (IOException | ParseException e) {
               Alert alert = new Alert(AlertType.INFORMATION);
               alert.setTitle("Alert");
@@ -623,12 +640,12 @@ public class Main extends Application {
    */
   public void setUpLoad2Screen(BorderPane pane) {
     count = 0;
-    
+
     // List of selected questions
     List<Question> quizQuestion = quizGenerator.getQuiz().getQuizQuestion();
 
     // Toggle group used to detect user's choice
-    ToggleGroup answergroup = showQuestion(pane, quizQuestion);
+    answergroup = showQuestion(pane, quizQuestion);
 
     HBox hbox = new HBox();
 
@@ -640,13 +657,13 @@ public class Main extends Application {
     hbox.setSpacing(10);
 
     // Submit and next question button doesn't apply if user didn't choose anything
-    
+
     // Finish quiz and jump to result page
     submit.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent me) {
         RadioButton selectedRadioButton = (RadioButton) answergroup.getSelectedToggle();
-        if (selectedRadioButton != null) {  // Make sure user chose one answer
+        if (selectedRadioButton != null) { // Make sure user chose one answer
           String toogleGroupValue = selectedRadioButton.getText();
           grade(toogleGroupValue, quizQuestion.get(count));
           setupScreens("next");
@@ -674,7 +691,7 @@ public class Main extends Application {
             activate("next");
           } else {
             count++;
-            showQuestion(pane, quizQuestion);
+            answergroup = showQuestion(pane, quizQuestion);
           }
         } else {
           Alert alert = new Alert(AlertType.INFORMATION);
@@ -691,7 +708,8 @@ public class Main extends Application {
 
   /**
    * Private helper to grade each question
-   * @param choice is the choice user chose
+   * 
+   * @param choice   is the choice user chose
    * @param question is the current question
    */
   private void grade(String choice, Question question) {
@@ -709,6 +727,7 @@ public class Main extends Application {
 
   /**
    * Next screen means the result right after the quiz
+   * 
    * @param pane is the pane we are working on
    */
   public void setUpNextScreen(BorderPane pane) {
@@ -721,8 +740,8 @@ public class Main extends Application {
     // Add number of total answered questions
     vbox.getChildren().add(new Text("Questions Answered: " + (count + 1)));
     // Show score in percentage
-    vbox.getChildren()
-        .addAll(new Text("Score:  " + Double.toString(quizGenerator.getQuiz().getScore()) + " %"));
+    vbox.getChildren().addAll(new Text("Score:  "
+        + Double.toString(Math.ceil(quizGenerator.getQuiz().getScore())) + " %"));
     pane.setCenter(vbox);
     pane.setAlignment(vbox, Pos.CENTER);
     pane.setMargin(vbox, insets);
@@ -770,6 +789,7 @@ public class Main extends Application {
 
   /**
    * The screen where user saves question bank
+   * 
    * @param pane is the pane we are working on
    */
   public void setUpSaveScreen(BorderPane pane) {
@@ -833,6 +853,7 @@ public class Main extends Application {
 
   /**
    * Exit screen
+   * 
    * @param pane
    */
   public void setUpExitScreen(BorderPane pane) {
@@ -895,6 +916,7 @@ public class Main extends Application {
 
   /**
    * Set up screens according to user input
+   * 
    * @param name is the name of screen which user is calling
    */
   public void setupScreens(String name) {
@@ -926,6 +948,7 @@ public class Main extends Application {
 
   /**
    * Method to show question such that we can generate new questions easier.
+   * 
    * @param pane
    * @param quizQuestion
    * @return toggle group of answers
@@ -935,7 +958,7 @@ public class Main extends Application {
     BorderPane currentScreen = pane;
     Text text = new Text("Quiz Question #" + (count + 1));
     text.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-    
+
     // Record quiz progress
     VBox recordBox = new VBox();
     recordBox.getChildren().add(text);
@@ -943,11 +966,11 @@ public class Main extends Application {
     recordBox.getChildren().add(new Text("Total: " + quizQuestion.size()));
     recordBox.setAlignment(Pos.CENTER_LEFT);
     currentScreen.setTop(recordBox);
-    
+
     HBox hbox = new HBox();
     Text questionText = new Text(10, 20, quizQuestion.get(count).getQuestion());
     questionText.setWrappingWidth(500);
-    
+
     VBox vbox = new VBox();
     vbox.getChildren().add(questionText);
     String[] choices = quizQuestion.get(count).getChoices();
@@ -957,12 +980,12 @@ public class Main extends Application {
     ImageView image;
     try {
       if (!imagePath.equals("none")) {
-        image = new ImageView(imagePath);
+        image = new ImageView("images/" + imagePath);
       } else { // leave an empty frame
         image = new ImageView();
       }
     } catch (IllegalArgumentException e) { // Cannot open image. Inform user and shows blank
-      image = new ImageView("invalidImage.jpg");
+      image = new ImageView("images/invalidImage.jpg");
     }
     image.setFitHeight(200);
     image.setFitWidth(200);
