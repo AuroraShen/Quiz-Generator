@@ -107,10 +107,10 @@ public class QuizGenerator implements GeneratorInterface {
    * @param amount is number of questions to put into the quiz
    */
   @Override
-  public void generateQuiz(String topic, int amount) {
+  public void generateQuiz(List<String> topics, int amount) {
     ArrayList<Question> quizQuestions = new ArrayList<>();
     for (Question question : questionBank) {
-      if (question.getTopic().equals(topic)) {
+      if (topics.contains(question.getTopic())) {
         quizQuestions.add(question);
       }
     }

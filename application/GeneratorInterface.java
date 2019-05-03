@@ -40,7 +40,7 @@ public interface GeneratorInterface {
    * @param topic the topic of the quiz to generate
    * @param amount is number of questions to put into the quiz
    */
-  public void generateQuiz(String topic, int amount);
+  public void generateQuiz(List<String> topic, int amount);
   
   /**
    * convert current quiz bank to a json file and save it to a specific filePath
