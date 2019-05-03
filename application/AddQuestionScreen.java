@@ -27,7 +27,7 @@ public class AddQuestionScreen extends Main {
    * 
    * @param pane is the pane we are setting up
    */
-  public void setUpAddScreen(BorderPane pane) {
+  public static void setUpAddScreen(BorderPane pane) {
     saved = false; // update new change so that user will be asked to save
     VBox vbox = new VBox();
     TextField textField; // common textField reference to use in this method
