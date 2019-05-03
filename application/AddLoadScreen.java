@@ -1,3 +1,12 @@
+/**
+ * Filename: UserInterface.java Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing Tu 
+ * Group: A-Team 68
+ * 
+ * UserInterface class is GUI class for this project.
+ * 
+ */
+
 package application;
 
 import java.io.IOException;
@@ -15,6 +24,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+/**
+ * Class represents question loading screen
+ */
 public class AddLoadScreen extends Main {
   /**
    * This screen is in charge of reading file before loading questions

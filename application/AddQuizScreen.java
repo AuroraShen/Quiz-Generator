@@ -1,3 +1,12 @@
+/**
+ * Filename: UserInterface.java Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing Tu 
+ * Group: A-Team 68
+ * 
+ * UserInterface class is GUI class for this project.
+ * 
+ */
+
 package application;
 
 import java.io.FileNotFoundException;
@@ -28,6 +37,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+/**
+ * Class represents screen generates quiz
+ */
 public class AddQuizScreen extends Main {
   static int count; // Count how many questions have been answered
   

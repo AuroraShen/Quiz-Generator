@@ -1,6 +1,7 @@
 /**
- * Filename: UserInterface.java Project: Quiz Generator Authors: Aaron Zhang, Aurora Shen, Tyler Gu,
- * Yixing Tu Group: A-Team 68
+ * Filename: UserInterface.java Project: Quiz Generator 
+ * Authors: Aaron Zhang, Aurora Shen, Tyler Gu, Yixing Tu 
+ * Group: A-Team 68
  * 
  * UserInterface class is GUI class for this project.
  * 
