@@ -12,6 +12,8 @@
 package application;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +79,9 @@ public class QuizGeneratorTest {
    */
   @Test
   public void test01_generator_quiz_with_one_question() throws Exception {
-    qg_000.generateQuiz("linux", 1);
+    List<String> topicList = new ArrayList<String>();
+    topicList.add("linux");
+    qg_000.generateQuiz(topicList, 1);
     Quiz quiz = qg_000.getQuiz();
     if (!quiz.getQuizQuestion().get(0).getTopic().equals("linux")) {
       fail("generate quiz function fails, topic does not match. \n" + "Excepted: linux, return: "
@@ -176,5 +180,25 @@ public class QuizGeneratorTest {
     } catch (Exception e) {
       fail("Unexpected exception: " + e.toString());
     }  
+  }
+  
+  /**
+   * This checks QuizGenerator's function of generating quiz with multiple topics
+   */
+  @Test
+  public void test_07_generate_quiz_with_two_topics() {
+    try {
+      List<String> topicList = new ArrayList<String>();
+      topicList.add("linux");
+      topicList.add("tree");
+      qg_002.generateQuiz(topicList, 3);
+      Quiz quiz = qg_002.getQuiz();
+      if ( quiz.getQuizQuestion().size() != 3 ) {
+        fail("generate quiz function fails, number does not match. \n" + "Excepted: 3, return: "
+            + quiz.getQuizQuestion().size());
+      }
+    }catch (Exception e) {
+      fail("Unexpected exception: " + e.toString());
+    }
   }
 }
