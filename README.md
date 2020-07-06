@@ -1,10 +1,8 @@
-# ateam68
-
 ## Team members:
-Aaron Zhang (zzhang867@wisc.edu). Lecture 004. X-team100
+Aaron Zhang (zzhang867@wisc.edu)
 
-Yixing Tu (ytu26@wisc.edu). Lecture 004. X-team129
+Yixing Tu (ytu26@wisc.edu)
 
-Aurora Shen (rshen27@wisc.edu). Lecture 004. X-team134
+Aurora Shen (rshen27@wisc.edu)
 
-Tyler Gu (jgu57@wisc.edu). Lecture 001. X-team 52
+Tyler Gu (jgu57@wisc.edu)
