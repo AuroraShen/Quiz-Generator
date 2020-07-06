@@ -1,4 +1,4 @@
-## Team members:
+## Team Project:
 Aaron Zhang (zzhang867@wisc.edu)
 
 Yixing Tu (ytu26@wisc.edu)
